@@ -20,7 +20,8 @@ export async function GET(request: NextRequest) {
       .eq("date", date)
       .eq("professional_id", professionalId)
       .eq("location_id", locationId)
-      .neq("status", "cancelled")
+      // .neq("status", "cancelled")
+      .not("status", "in", '("cancelled", "deleted")')
 
     const bookedTimes = bookedAppointments?.map(a => a.time) || []
     const slots = generateTimeSlots(date, bookedTimes)
@@ -31,6 +32,7 @@ export async function GET(request: NextRequest) {
   let query = supabase
     .from("appointments")
     .select("*")
+    .neq("status", "deleted") // <--- ESTA LÍNEA filtra los borrados
     .order("date", { ascending: true })
     .order("time", { ascending: true })
 

@@ -49,7 +49,7 @@ export async function PATCH(
     const body = await request.json()
     const { status } = body
     console.log("PATCH status: ", status)
-    if (!status || !["pending", "confirmed", "cancelled"].includes(status)) {
+    if (!status || !["pending", "confirmed", "cancelled", "deleted"].includes(status)) {
       return NextResponse.json(
         { error: "Estado invalido" },
         { status: 400 }

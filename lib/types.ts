@@ -27,7 +27,7 @@ export interface Appointment {
   date: string
   time: string
   notes?: string
-  status: "pending" | "confirmed" | "cancelled"
+  status: "pending" | "confirmed" | "cancelled" | "deleted"
   createdAt: string
 }
 

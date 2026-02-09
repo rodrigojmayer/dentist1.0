@@ -9,8 +9,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { AppointmentsTable } from "./appointments-table"
 import { AppointmentFilters } from "./appointment-filters"
 import type { Appointment } from "@/lib/types"
+import { useToast } from "@/hooks/use-toast"
+
 
 export function AdminDashboard() {
+  const { toast } = useToast() // <--- Agregá esta línea al principio
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState({
@@ -35,10 +38,9 @@ export function AdminDashboard() {
     fetchAppointments()
   }, [fetchAppointments])
 
-  const handleStatusChange = async (id: string, status: "confirmed" | "cancelled") => {
-    console.log("handleStatusChange id: ", id)
-    console.log("handleStatusChange status: ", status)
+  const handleStatusChange = async (id: string, status: "confirmed" | "cancelled" | "deleted") => {
     try {
+      console.log("status: ", status)
       const response = await fetch(`/api/appointments/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -46,9 +48,17 @@ export function AdminDashboard() {
       })
       
       if (response.ok) {
-        setAppointments(prev => 
-          prev.map(apt => apt.id === id ? { ...apt, status } : apt)
+        setAppointments(prev => {
+          if (status === "deleted") {
+                  return prev.filter(apt => apt.id !== id);
+                }
+          return prev.map(apt => apt.id === id ? { ...apt, status } : apt)
+        }
         )
+        toast({
+      title: status === "deleted" ? "Turno eliminado" : "Estado actualizado",
+      description: `El turno ha sido marcado como ${status}.`,
+    });
       }
     } catch (error) {
       console.error("Error updating appointment:", error)
@@ -56,19 +66,23 @@ export function AdminDashboard() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Esta seguro de eliminar este turno?")) return
-    
-    try {
-      const response = await fetch(`/api/appointments/${id}`, {
-        method: "DELETE"
-      })
+    if (!confirm("Esta seguro de eliminar este turno?")){
       
-      if (response.ok) {
-        setAppointments(prev => prev.filter(apt => apt.id !== id))
-      }
-    } catch (error) {
-      console.error("Error deleting appointment:", error)
-    }
+
+      return
+    } 
+      handleStatusChange(id, "deleted")
+    // try {
+    //   const response = await fetch(`/api/appointments/${id}`, {
+    //     method: "DELETE"
+    //   })
+      
+    //   if (response.ok) {
+    //     setAppointments(prev => prev.filter(apt => apt.id !== id))
+    //   }
+    // } catch (error) {
+    //   console.error("Error deleting appointment:", error)
+    // }
   }
 
   const filteredAppointments = appointments.filter(apt => {
@@ -81,6 +95,7 @@ export function AdminDashboard() {
     total: appointments.length,
     pending: appointments.filter(a => a.status === "pending").length,
     confirmed: appointments.filter(a => a.status === "confirmed").length,
+    deleted: appointments.filter(a => a.status === "deleted").length,
     today: appointments.filter(a => a.date === new Date().toISOString().split('T')[0]).length,
   }
 

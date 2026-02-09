@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils"
 
 interface AppointmentsTableProps {
   appointments: Appointment[]
-  onStatusChange: (id: string, status: "confirmed" | "cancelled") => void
+  onStatusChange: (id: string, status: "confirmed" | "cancelled" | "deleted") => void
   onDelete: (id: string) => void
 }
 
@@ -23,6 +23,7 @@ const statusConfig = {
   pending: { label: "Pendiente", variant: "secondary" as const, className: "bg-amber-100 text-amber-800" },
   confirmed: { label: "Confirmado", variant: "secondary" as const, className: "bg-green-100 text-green-800" },
   cancelled: { label: "Cancelado", variant: "secondary" as const, className: "bg-red-100 text-red-800" },
+  deleted: { label: "Deleted", variant: "secondary" as const, className: "bg-red-100 text-red-800" },
 }
 
 export function AppointmentsTable({ appointments, onStatusChange, onDelete }: AppointmentsTableProps) {
