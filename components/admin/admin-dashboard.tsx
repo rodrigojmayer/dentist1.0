@@ -36,6 +36,8 @@ export function AdminDashboard() {
   }, [fetchAppointments])
 
   const handleStatusChange = async (id: string, status: "confirmed" | "cancelled") => {
+    console.log("handleStatusChange id: ", id)
+    console.log("handleStatusChange status: ", status)
     try {
       const response = await fetch(`/api/appointments/${id}`, {
         method: "PATCH",
