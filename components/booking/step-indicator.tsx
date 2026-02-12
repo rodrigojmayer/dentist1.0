@@ -42,14 +42,14 @@ export function StepIndicator({ currentStep }: StepIndicatorProps) {
                 {step.label}
               </span>
             </div>
-            {index < steps.length - 1 && (
+            {/* {index < steps.length - 1 && (
               <div
                 className={cn(
                   "h-0.5 flex-1 mx-2",
                   index < currentIndex ? "bg-primary" : "bg-muted"
                 )}
               />
-            )}
+            )} */}
           </div>
         ))}
       </div>
