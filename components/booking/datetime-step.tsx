@@ -31,7 +31,25 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
       fetch(`/api/appointments?slots=true&date=${date}&professionalId=${professionalId}&locationId=${locationId}`)
         .then(res => res.json())
         .then(data => {
-          setSlots(data.slots || [])
+          const fetchedSlots: TimeSlot[] = data.slots || []
+          // --- Lógica para filtrar horarios pasados ---
+          const now = new Date()
+          const todayStr = now.toISOString().split("T")[0]
+          const processedSlots = fetchedSlots.map(slot => {
+            // Si la fecha elegida es hoy, comparamos las horas
+            if (date === todayStr) {
+              const [slotHour, slotMinutes] = slot.time.split(":").map(Number)
+              const currentTime = now.getHours() * 60 + now.getMinutes()
+              const slotTime = slotHour * 60 + (slotMinutes || 0)
+
+              if (slotTime <= currentTime + 30) { // Hasta media hora hacia adelante se inhabilitan los turnos 
+                return { ...slot, available: false }
+              }
+            }
+            return slot
+          })
+
+          setSlots(processedSlots)
           setLoading(false)
         })
         .catch(() => {
