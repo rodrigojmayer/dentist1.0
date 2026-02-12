@@ -271,7 +271,7 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
 
       {/* Dialog con detalles del turno */}
       <Dialog open={!!selectedAppointment} onOpenChange={() => setSelectedAppointment(null)}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md pt-12">
           <DialogHeader>
             <DialogTitle className="flex items-center justify-between">
               <span>Detalle del Turno</span>
