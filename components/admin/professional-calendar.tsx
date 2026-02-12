@@ -46,21 +46,33 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
 
   const weekDays = getWeekDays(currentDate)
 
+  const formatDateLocal = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const fetchAppointments = useCallback(async () => {
     setLoading(true)
     try {
-      const startDate = weekDays[0].toISOString().split("T")[0]
-      const endDate = weekDays[6].toISOString().split("T")[0]
-      
+      // const startDate = weekDays[0].toISOString().split("T")[0]
+      // const endDate = weekDays[6].toISOString().split("T")[0]
+      const startDate = formatDateLocal(weekDays[0]);
+      const endDate = formatDateLocal(weekDays[6]);
       const response = await fetch(
         `/api/appointments?professionalId=${professional.id}&startDate=${startDate}&endDate=${endDate}`
       )
       if (response.ok) {
         const data = await response.json()
-        setAppointments(data)
+        // setAppointments(data)
+        // // CAMBIO AQUÍ: Accedé a la propiedad appointments del objeto
+        console.log("fetchAppointments data: ", data)
+        setAppointments(data.appointments || [])
       }
     } catch (error) {
       console.error("Error fetching appointments:", error)
+      setAppointments([]) // Default a array vacío si falla
     } finally {
       setLoading(false)
     }
@@ -87,7 +99,13 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
   }
 
   const getAppointmentForSlot = (date: Date, hour: number) => {
-    const dateStr = date.toISOString().split("T")[0]
+    // En lugar de toISOString(), armamos el string local "YYYY-MM-DD"
+    // const dateStr = date.toISOString().split("T")[0]
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dateStr = `${year}-${month}-${day}`;
+
     return appointments.filter((apt) => {
       const aptHour = Number.parseInt(apt.time.split(":")[0])
       return apt.date === dateStr && aptHour === hour && apt.status !== "cancelled"
@@ -210,6 +228,9 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
                       </td>
                       {weekDays.map((day, dayIndex) => {
                         const dayAppointments = getAppointmentForSlot(day, hour)
+                        console.log("weekDays.map day: ", day)
+                        console.log("weekDays.map dayIndex: ", dayIndex)
+                        console.log("weekDays.map dayAppointments: ", dayAppointments)
                         const isSunday = day.getDay() === 0
                         
                         return (
