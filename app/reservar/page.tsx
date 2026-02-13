@@ -3,8 +3,8 @@ import { Footer } from "@/components/footer"
 import { BookingForm } from "@/components/booking/booking-form"
 
 export const metadata = {
-  title: "Reservar Turno | Consultorios del Sol",
-  description: "Reserva tu turno online en Consultorios del Sol. Atencion odontologica en Rosario, Funes y San Lorenzo."
+  title: "Reservar Turno | Instituto Odontológico Especializado",
+  description: "Reserva tu turno online en Instituto Odontológico Especializado. Atencion odontologica en Rosario, Funes y San Lorenzo."
 }
 
 export default function ReservarPage() {

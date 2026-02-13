@@ -16,13 +16,13 @@ export function Hero() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center md:text-left">
         <div className="max-w-2xl">
           <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-background mb-6 text-balance">
-            CONSULTORIOS DEL SOL
+            Instituto Odontológico Especializado
           </h1>
           <p className="text-lg md:text-xl text-background/90 mb-8 leading-relaxed">
             Cuidando sonrisas en Rosario, Funes y San Lorenzo. Misma calidad, mismos profesionales, siempre cerca tuyo.
           </p>
           <Link href="/reservar">
-            <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground font-medium text-lg px-8 py-6">
+            <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground font-medium text-lg px-8 py-6 cursor-pointer">
               Reservar turno
             </Button>
           </Link>

@@ -107,7 +107,7 @@ export function AdminDashboard() {
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
               <Sun className="h-8 w-8 text-accent" />
-              <span className="font-serif text-xl font-semibold">Consultorios del Sol</span>
+              <span className="font-serif text-xl font-semibold">Instituto Odontológico Especializado</span>
             </Link>
             <span className="text-background/70 text-sm">Panel de Administracion</span>
           </div>
@@ -120,7 +120,7 @@ export function AdminDashboard() {
             <h1 className="text-2xl font-bold text-foreground">Gestion de Turnos</h1>
             <p className="text-muted-foreground">Administra las citas de los pacientes</p>
           </div>
-          <Button onClick={fetchAppointments} variant="outline" className="gap-2 bg-transparent">
+          <Button onClick={fetchAppointments} variant="outline" className="gap-2 bg-transparent cursor-pointer">
             <RefreshCw className="h-4 w-4" />
             Actualizar
           </Button>

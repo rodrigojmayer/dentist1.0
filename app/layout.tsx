@@ -15,7 +15,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: 'Consultorios del Sol | Odontologia en Rosario, Funes y San Lorenzo',
+  title: 'Instituto Odontológico Especializado | Odontologia en Rosario, Funes y San Lorenzo',
   description: 'Cuidando sonrisas en Rosario, Funes y San Lorenzo. Misma calidad, mismos profesionales, siempre cerca tuyo. Reserva tu turno online.',
   generator: 'v0.app',
   icons: {

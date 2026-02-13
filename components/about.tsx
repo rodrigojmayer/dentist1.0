@@ -13,7 +13,7 @@ export function About() {
               Odontologos totalmente profesionales
             </h3>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              En Consultorios del Sol creemos que una sonrisa saludable transforma la vida de las personas. Nuestro equipo de profesionales combina experiencia, pasion y calidez humana para brindarte la mejor atencion en cada visita.
+              En Instituto Odontológico Especializado creemos que una sonrisa saludable transforma la vida de las personas. Nuestro equipo de profesionales combina experiencia, pasion y calidez humana para brindarte la mejor atencion en cada visita.
             </p>
             <p className="text-muted-foreground leading-relaxed mb-8">
               Trabajamos de manera integral, cada especialista aportando su conocimiento para lograr resultados duraderos y una experiencia comoda y confiable. Tu salud y tu confianza son nuestra prioridad.

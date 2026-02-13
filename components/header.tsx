@@ -15,7 +15,7 @@ export function Header() {
           <Link href="/" className="flex items-center gap-2">
             <Sun className="h-8 w-8 text-accent" />
             <span className="font-serif text-xl md:text-2xl font-semibold text-foreground">
-              Consultorios del Sol
+              Instituto Odontológico Especializado
             </span>
           </Link>
 
@@ -36,7 +36,7 @@ export function Header() {
 
           <div className="flex items-center gap-4">
             <Link href="/reservar" className="hidden md:block">
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer">
                 Sacar turno
               </Button>
             </Link>
