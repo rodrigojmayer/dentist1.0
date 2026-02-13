@@ -2,39 +2,39 @@ import { Card, CardContent } from "@/components/ui/card"
 
 const team = [
   {
-    name: "Od. Anabela Martinez",
+    name: "Od. Ana Marquez",
     specialties: "Alineadores invisibles - Ortodoncia - Botox - Odontopediatria - Odontologia general",
-    image: "/team/anabela.jpg"
+    image: "/team/ana.jpg"
   },
   {
     name: "Od. Mailen Luque",
     specialties: "Cirugias - Implantes - Coronas sobre implantes - Frenectomias - Gingivectomias - Extracciones",
-    image: "/team/mailen.jpg"
+    image: "/team/adriana.jpg"
   },
   {
-    name: "Od. Sofia Fanelli",
+    name: "Od. Erica Fani",
     specialties: "Protesis - Estetica - Tratamientos de conducto - Extracciones - Odontologia general",
-    image: "/team/sofia.jpg"
+    image: "/team/erica.jpg"
   },
   {
-    name: "Od. Daiana Lovino",
+    name: "Od. Carla Perez",
     specialties: "Ortodoncia - Ortopedia - Alineadores invisibles",
-    image: "/team/daiana.jpg"
+    image: "/team/carla.jpg"
   },
   {
-    name: "Od. Aldana Arroniz",
+    name: "Od. Julieta Azcua",
     specialties: "Endodoncias - Protesis - Estetica - Odontologia general",
-    image: "/team/aldana.jpg"
+    image: "/team/julieta.jpg"
   },
   {
-    name: "Od. Mara Marin",
+    name: "Od. Maria Diaz",
     specialties: "Odontopediatria - Odontologia general - Operatoria dental",
-    image: "/team/mara.jpg"
+    image: "/team/maria.jpg"
   },
   {
-    name: "Od. Natasha Paulochenka",
+    name: "Od. Natalia Ojeda",
     specialties: "Odontologia general - Estetica - Extracciones",
-    image: "/team/natasha.jpg"
+    image: "/team/natalia.jpg"
   },
 ]
 

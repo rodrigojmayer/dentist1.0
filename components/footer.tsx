@@ -41,11 +41,11 @@ export function Footer() {
             <div className="space-y-3 text-background/70">
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4 flex-shrink-0" />
-                <span>3412722087</span>
+                <span>3412701897</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 flex-shrink-0" />
-                <span>9 de Julio 1209, Rosario</span>
+                <span>9 de Julio 7109, Rosario</span>
               </div>
             </div>
           </div>

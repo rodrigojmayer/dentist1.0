@@ -4,18 +4,18 @@ import { Card, CardContent } from "@/components/ui/card"
 const locations = [
   {
     city: "Funes",
-    address: "Catamarca 1762",
-    phone: "3412427286",
+    address: "Catamarca 3152",
+    phone: "3412242661",
   },
   {
     city: "Rosario",
-    address: "9 de Julio 1209",
-    phone: "3412722087",
+    address: "9 de Julio 7109",
+    phone: "3412701897",
   },
   {
     city: "San Lorenzo",
     address: "Bv. Urquiza",
-    phone: "3476210367",
+    phone: "3476250164",
   },
 ]
 
