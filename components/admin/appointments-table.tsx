@@ -88,7 +88,7 @@ export function AppointmentsTable({ appointments, onStatusChange, onDelete }: Ap
               <td className="p-4 text-right">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0  cursor-pointer">
                       <MoreHorizontal className="h-4 w-4" />
                       <span className="sr-only">Abrir menu</span>
                     </Button>

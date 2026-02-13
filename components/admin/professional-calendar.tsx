@@ -159,13 +159,13 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon" onClick={previousWeek}>
+              <Button variant="outline" size="icon" onClick={previousWeek} className="cursor-pointer">
                 <ChevronLeft className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="icon" onClick={nextWeek}>
+              <Button variant="outline" size="icon" onClick={nextWeek} className="cursor-pointer">
                 <ChevronRight className="h-4 w-4" />
               </Button>
-              <Button variant="outline" onClick={goToToday}>
+              <Button variant="outline" onClick={goToToday} className="cursor-pointer">
                 Hoy
               </Button>
             </div>

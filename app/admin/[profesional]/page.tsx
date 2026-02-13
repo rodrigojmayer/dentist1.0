@@ -30,7 +30,7 @@ export default async function ProfessionalPage({
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-4">
             <Link href="/admin">
-              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10">
+              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10  cursor-pointer">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>

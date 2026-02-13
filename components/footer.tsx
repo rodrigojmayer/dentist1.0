@@ -9,7 +9,7 @@ export function Footer() {
           <div className="md:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-4">
               <Sun className="h-8 w-8 text-accent" />
-              <span className="font-serif text-2xl font-semibold">Consultorios del Sol</span>
+              <span className="font-serif text-2xl font-semibold">Instituto Odontológico Especializado</span>
             </Link>
             <p className="text-background/70 mb-6 max-w-md">
               Cuidando sonrisas en Rosario, Funes y San Lorenzo. Misma calidad, mismos profesionales, siempre cerca tuyo.
@@ -70,7 +70,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-background/10 mt-12 pt-8 text-center text-background/50 text-sm">
-          <p>&copy; {new Date().getFullYear()} Consultorios del Sol. Todos los derechos reservados.</p>
+          <p>&copy; {new Date().getFullYear()} Instituto Odontológico Especializado. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>

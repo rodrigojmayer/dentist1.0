@@ -50,7 +50,7 @@ export function WhyUs() {
 
         <div className="text-center">
           <Link href="/reservar">
-            <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground">
+            <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer">
               Reservar turno ahora
             </Button>
           </Link>
