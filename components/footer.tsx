@@ -53,13 +53,13 @@ export function Footer() {
           <div>
             <h3 className="font-semibold mb-4">Enlaces</h3>
             <div className="space-y-3">
-              <Link href="#equipo" className="block text-background/70 hover:text-background transition-colors">
+              <Link href="/#equipo" className="block text-background/70 hover:text-background transition-colors">
                 Equipo
               </Link>
-              <Link href="#nosotros" className="block text-background/70 hover:text-background transition-colors">
+              <Link href="/#nosotros" className="block text-background/70 hover:text-background transition-colors">
                 Nosotros
               </Link>
-              <Link href="#sucursales" className="block text-background/70 hover:text-background transition-colors">
+              <Link href="/#sucursales" className="block text-background/70 hover:text-background transition-colors">
                 Sucursales
               </Link>
               <Link href="/reservar" className="block text-background/70 hover:text-background transition-colors">

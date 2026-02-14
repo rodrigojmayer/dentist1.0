@@ -20,16 +20,16 @@ export function Header() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
-            <Link href="#equipo" className="text-muted-foreground hover:text-primary transition-colors">
+            <Link href="/#equipo" className="text-muted-foreground hover:text-primary transition-colors">
               Equipo
             </Link>
-            <Link href="#nosotros" className="text-muted-foreground hover:text-primary transition-colors">
+            <Link href="/#nosotros" className="text-muted-foreground hover:text-primary transition-colors">
               Nosotros
             </Link>
-            <Link href="#sucursales" className="text-muted-foreground hover:text-primary transition-colors">
+            <Link href="/#sucursales" className="text-muted-foreground hover:text-primary transition-colors">
               Sucursales
             </Link>
-            <Link href="#servicios" className="text-muted-foreground hover:text-primary transition-colors">
+            <Link href="/#servicios" className="text-muted-foreground hover:text-primary transition-colors">
               Servicios
             </Link>
           </nav>
@@ -56,28 +56,28 @@ export function Header() {
           <div className="md:hidden py-4 border-t border-border">
             <nav className="flex flex-col gap-4">
               <Link 
-                href="#equipo" 
+                href="/#equipo" 
                 className="text-muted-foreground hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Equipo
               </Link>
               <Link 
-                href="#nosotros" 
+                href="/#nosotros" 
                 className="text-muted-foreground hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Nosotros
               </Link>
               <Link 
-                href="#sucursales" 
+                href="/#sucursales" 
                 className="text-muted-foreground hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Sucursales
               </Link>
               <Link 
-                href="#servicios" 
+                href="/#servicios" 
                 className="text-muted-foreground hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
