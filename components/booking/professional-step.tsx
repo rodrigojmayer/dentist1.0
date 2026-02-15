@@ -22,7 +22,7 @@ export function ProfessionalStep({ locationId, selectedProfessional, onSelect, o
       <button
         type="button"
         onClick={onBack}
-        className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4 transition-colors"
+        className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4 transition-colors cursor-pointer"
       >
         <ArrowLeft className="h-4 w-4" />
         <span>Volver</span>
@@ -42,7 +42,7 @@ export function ProfessionalStep({ locationId, selectedProfessional, onSelect, o
             type="button"
             onClick={() => onSelect(professional.id)}
             className={cn(
-              "w-full p-4 rounded-lg border text-left transition-all",
+              "w-full p-4 rounded-lg border text-left transition-all cursor-pointer",
               "hover:border-primary hover:bg-primary/5",
               selectedProfessional === professional.id
                 ? "border-primary bg-primary/5"

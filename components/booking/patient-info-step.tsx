@@ -65,7 +65,7 @@ export function PatientInfoStep({ data, onUpdate, onSubmit, onBack }: PatientInf
       <button
         type="button"
         onClick={onBack}
-        className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4 transition-colors"
+        className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4 transition-colors cursor-pointer"
       >
         <ArrowLeft className="h-4 w-4" />
         <span>Volver</span>
@@ -162,7 +162,7 @@ export function PatientInfoStep({ data, onUpdate, onSubmit, onBack }: PatientInf
         <Button
           onClick={handleSubmit}
           disabled={loading}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer"
         >
           {loading ? "Confirmando..." : "Confirmar turno"}
         </Button>

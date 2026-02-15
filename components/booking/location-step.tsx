@@ -26,7 +26,7 @@ export function LocationStep({ selectedLocation, onSelect }: LocationStepProps) 
             type="button"
             onClick={() => onSelect(location.id)}
             className={cn(
-              "w-full p-4 rounded-lg border text-left transition-all",
+              "w-full p-4 rounded-lg border text-left transition-all cursor-pointer",
               "hover:border-primary hover:bg-primary/5",
               selectedLocation === location.id
                 ? "border-primary bg-primary/5"

@@ -109,7 +109,7 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
             setTime("")
           }}
           className={cn(
-            "h-10 w-full rounded-md text-sm transition-colors",
+            "h-10 w-full rounded-md text-sm transition-colors cursor-pointer",
             isDisabled && "text-muted-foreground/50 cursor-not-allowed",
             !isDisabled && "hover:bg-primary/10",
             isSelected && !isDisabled && "bg-primary text-primary-foreground hover:bg-primary"
@@ -142,7 +142,7 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
       <button
         type="button"
         onClick={onBack}
-        className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4 transition-colors"
+        className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4 transition-colors cursor-pointer"
       >
         <ArrowLeft className="h-4 w-4" />
         <span>Volver</span>
@@ -168,14 +168,14 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
                 type="button"
                 onClick={prevMonth}
                 disabled={!canGoPrev()}
-                className="p-1 rounded hover:bg-muted disabled:opacity-50"
+                className="p-1 rounded hover:bg-muted disabled:opacity-50 cursor-pointer"
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
               <button
                 type="button"
                 onClick={nextMonth}
-                className="p-1 rounded hover:bg-muted"
+                className="p-1 rounded hover:bg-muted cursor-pointer"
               >
                 <ChevronRight className="h-5 w-5" />
               </button>
@@ -217,7 +217,7 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
                   disabled={!slot.available}
                   onClick={() => setTime(slot.time)}
                   className={cn(
-                    "py-2 px-3 rounded-md text-sm border transition-colors",
+                    "py-2 px-3 rounded-md text-sm border transition-colors cursor-pointer",
                     !slot.available && "bg-muted text-muted-foreground/50 cursor-not-allowed border-transparent",
                     slot.available && time !== slot.time && "border-border hover:border-primary hover:bg-primary/5",
                     time === slot.time && "bg-primary text-primary-foreground border-primary"
@@ -235,7 +235,7 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
         <Button
           onClick={() => onSelect(date, time)}
           disabled={!date || !time}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer"
         >
           Continuar
         </Button>
