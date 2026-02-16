@@ -5,13 +5,20 @@ import { Professional, Appointment, locations } from "@/lib/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ChevronLeft, ChevronRight, Clock, User, Phone, Mail, MapPin, FileText, Stethoscope } from "lucide-react"
+import { ChevronLeft, ChevronRight, Clock, User, Phone, Mail, MapPin, FileText, Stethoscope, MoreHorizontal, Trash2, X, Check } from "lucide-react"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { useAppointments } from "@/hooks/use-appointments"
 
 interface ProfessionalCalendarProps {
   professional: Professional
@@ -24,8 +31,16 @@ interface AppointmentWithService extends Appointment {
 const HOURS = Array.from({ length: 10 }, (_, i) => i + 9) // 9:00 - 18:00
 
 export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps) {
+  
+  const {
+    appointments,
+    setAppointments,
+    handleStatusChange,
+    handleDelete
+  } = useAppointments()
+
   const [currentDate, setCurrentDate] = useState(new Date())
-  const [appointments, setAppointments] = useState<AppointmentWithService[]>([])
+  // const [appointments, setAppointments] = useState<AppointmentWithService[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedAppointment, setSelectedAppointment] = useState<AppointmentWithService | null>(null)
 
@@ -275,11 +290,56 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
           <DialogHeader>
             <DialogTitle className="flex items-center justify-between">
               <span>Detalle del Turno</span>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
               <Badge
-                className={`${getStatusColor(selectedAppointment?.status || "")} text-card border-0`}
+                className={`${getStatusColor(selectedAppointment?.status || "")} text-card border-0 cursor-pointer hover:scale-105 transition-transform`}
               >
                 {getStatusText(selectedAppointment?.status || "")}
               </Badge>
+                  {/* <Button variant="ghost" size="sm" className="h-8 w-8 p-0 cursor-pointer">
+                    <MoreHorizontal className="h-4 w-4" />
+                    <span className="sr-only">Abrir menu</span>
+                  </Button> */}
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent align="end">
+                  {selectedAppointment?.status !== "confirmed" && (
+                    <DropdownMenuItem
+                      onClick={() =>
+                        selectedAppointment &&
+                        handleStatusChange(selectedAppointment.id, "confirmed")
+                      }
+                    >
+                      <Check className="h-4 w-4 mr-2 text-green-600" />
+                      Confirmar
+                    </DropdownMenuItem>
+                  )}
+
+                  {selectedAppointment?.status !== "cancelled" && (
+                    <DropdownMenuItem
+                      onClick={() =>
+                        selectedAppointment &&
+                        handleStatusChange(selectedAppointment.id, "cancelled")
+                      }
+                    >
+                      <X className="h-4 w-4 mr-2 text-amber-600" />
+                      Cancelar
+                    </DropdownMenuItem>
+                  )}
+
+                  <DropdownMenuItem
+                    onClick={() =>
+                      selectedAppointment &&
+                      handleDelete(selectedAppointment.id)
+                    }
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Eliminar
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </DialogTitle>
           </DialogHeader>
           {selectedAppointment && (

@@ -10,16 +10,24 @@ import { AppointmentsTable } from "./appointments-table"
 import { AppointmentFilters } from "./appointment-filters"
 import type { Appointment } from "@/lib/types"
 import { useToast } from "@/hooks/use-toast"
+import { useAppointments } from "@/hooks/use-appointments"
 
 
 export function AdminDashboard() {
   const { toast } = useToast() // <--- Agregá esta línea al principio
-  const [appointments, setAppointments] = useState<Appointment[]>([])
+  // const [appointments, setAppointments] = useState<Appointment[]>([])
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState({
     status: "all",
     date: "",
   })
+
+  const {
+    appointments,
+    setAppointments,
+    handleStatusChange,
+    handleDelete
+  } = useAppointments()
 
   const fetchAppointments = useCallback(async () => {
     setLoading(true)
@@ -38,52 +46,52 @@ export function AdminDashboard() {
     fetchAppointments()
   }, [fetchAppointments])
 
-  const handleStatusChange = async (id: string, status: "confirmed" | "cancelled" | "deleted") => {
-    try {
-      console.log("status: ", status)
-      const response = await fetch(`/api/appointments/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status })
-      })
+  // const handleStatusChange = async (id: string, status: "confirmed" | "cancelled" | "deleted") => {
+  //   try {
+  //     console.log("status: ", status)
+  //     const response = await fetch(`/api/appointments/${id}`, {
+  //       method: "PATCH",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ status })
+  //     })
       
-      if (response.ok) {
-        setAppointments(prev => {
-          if (status === "deleted") {
-                  return prev.filter(apt => apt.id !== id);
-                }
-          return prev.map(apt => apt.id === id ? { ...apt, status } : apt)
-        }
-        )
-        toast({
-      title: status === "deleted" ? "Turno eliminado" : "Estado actualizado",
-      description: `El turno ha sido marcado como ${status}.`,
-    });
-      }
-    } catch (error) {
-      console.error("Error updating appointment:", error)
-    }
-  }
+  //     if (response.ok) {
+  //       setAppointments(prev => {
+  //         if (status === "deleted") {
+  //                 return prev.filter(apt => apt.id !== id);
+  //               }
+  //         return prev.map(apt => apt.id === id ? { ...apt, status } : apt)
+  //       }
+  //       )
+  //       toast({
+  //     title: status === "deleted" ? "Turno eliminado" : "Estado actualizado",
+  //     description: `El turno ha sido marcado como ${status}.`,
+  //   });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating appointment:", error)
+  //   }
+  // }
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Esta seguro de eliminar este turno?")){
+  // const handleDelete = async (id: string) => {
+  //   if (!confirm("Esta seguro de eliminar este turno?")){
       
 
-      return
-    } 
-      handleStatusChange(id, "deleted")
-    // try {
-    //   const response = await fetch(`/api/appointments/${id}`, {
-    //     method: "DELETE"
-    //   })
+  //     return
+  //   } 
+  //     handleStatusChange(id, "deleted")
+  //   // try {
+  //   //   const response = await fetch(`/api/appointments/${id}`, {
+  //   //     method: "DELETE"
+  //   //   })
       
-    //   if (response.ok) {
-    //     setAppointments(prev => prev.filter(apt => apt.id !== id))
-    //   }
-    // } catch (error) {
-    //   console.error("Error deleting appointment:", error)
-    // }
-  }
+  //   //   if (response.ok) {
+  //   //     setAppointments(prev => prev.filter(apt => apt.id !== id))
+  //   //   }
+  //   // } catch (error) {
+  //   //   console.error("Error deleting appointment:", error)
+  //   // }
+  // }
 
   const filteredAppointments = appointments.filter(apt => {
     if (filters.status !== "all" && apt.status !== filters.status) return false
