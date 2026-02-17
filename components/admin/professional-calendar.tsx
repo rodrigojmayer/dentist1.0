@@ -243,9 +243,9 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
                       </td>
                       {weekDays.map((day, dayIndex) => {
                         const dayAppointments = getAppointmentForSlot(day, hour)
-                        console.log("weekDays.map day: ", day)
-                        console.log("weekDays.map dayIndex: ", dayIndex)
-                        console.log("weekDays.map dayAppointments: ", dayAppointments)
+                        // console.log("weekDays.map day: ", day)
+                        // console.log("weekDays.map dayIndex: ", dayIndex)
+                        // console.log("weekDays.map dayAppointments: ", dayAppointments)
                         const isSunday = day.getDay() === 0
                         
                         return (
@@ -306,9 +306,13 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
                 <DropdownMenuContent align="end">
                   {selectedAppointment?.status !== "confirmed" && (
                     <DropdownMenuItem
-                      onClick={() =>
-                        selectedAppointment &&
+                      onClick={() => {
+
+                        selectedAppointment && 
                         handleStatusChange(selectedAppointment.id, "confirmed")
+                        
+                        selectedAppointment && setSelectedAppointment({...selectedAppointment, status:"confirmed"} as AppointmentWithService)
+                      }
                       }
                     >
                       <Check className="h-4 w-4 mr-2 text-green-600" />
@@ -318,9 +322,14 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
 
                   {selectedAppointment?.status !== "cancelled" && (
                     <DropdownMenuItem
-                      onClick={() =>
+                      onClick={() => {
+
                         selectedAppointment &&
                         handleStatusChange(selectedAppointment.id, "cancelled")
+                        selectedAppointment && setSelectedAppointment({...selectedAppointment, status:"cancelled"} as AppointmentWithService)
+                       
+                        selectedAppointment && setSelectedAppointment({...selectedAppointment, status:"cancelled"} as AppointmentWithService)
+                      }
                       }
                     >
                       <X className="h-4 w-4 mr-2 text-amber-600" />
