@@ -208,31 +208,35 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse min-w-[800px]">
+              <table className="w-full border-collapse min-w-[800px] table-fixed">
                 <thead>
                   <tr>
                     <th className="w-20 p-2 border-b border-r bg-muted/50 text-muted-foreground text-sm font-medium">
                       Hora
                     </th>
-                    {weekDays.map((day, index) => (
-                      <th
-                        key={index}
-                        className={`p-2 border-b text-center ${
-                          isToday(day) ? "bg-primary/10" : "bg-muted/30"
-                        }`}
-                      >
-                        <div className="text-xs text-muted-foreground uppercase">
-                          {day.toLocaleDateString("es-AR", { weekday: "short" })}
-                        </div>
-                        <div
-                          className={`text-lg font-semibold ${
-                            isToday(day) ? "text-primary" : ""
+                    {weekDays.map((day, index) => {
+                      const isSunday = day.getDay() === 0;
+                      return (
+                        <th
+                          key={index}
+                          className={`p-2 border-b text-center  ${
+                            isSunday ? "w-[60px]" : "w-auto"
+                          }  ${isToday(day) ? "bg-primary/10" : "bg-muted/30"
                           }`}
                         >
-                          {day.getDate()}
-                        </div>
-                      </th>
-                    ))}
+                          <div className="text-xs text-muted-foreground uppercase">
+                            {day.toLocaleDateString("es-AR", { weekday: "short" })}
+                          </div>
+                          <div
+                            className={`text-lg font-semibold ${
+                              isToday(day) ? "text-primary" : ""
+                            }`}
+                          >
+                            {day.getDate()}
+                          </div>
+                        </th>
+                      )
+                    })}
                   </tr>
                 </thead>
                 <tbody>
@@ -251,16 +255,16 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
                         return (
                           <td
                             key={dayIndex}
-                            className={`p-1 border-b border-r h-20 align-top ${
+                            className={`p-1 border-b border-r h-12 align-top ${
                               isToday(day) ? "bg-primary/5" : ""
-                            } ${isSunday ? "bg-muted/40" : ""}`}
+                            } ${isSunday ? "bg-muted/40 w-[60px]" : ""}`}
                           >
                             {dayAppointments.map((apt) => (
                               <button
                                 type="button"
                                 key={apt.id}
-                                onClick={() => setSelectedAppointment(apt)}
-                                className={`w-full mb-1 p-2 rounded text-left text-xs text-card transition-transform hover:scale-[1.02] cursor-pointer ${getStatusColor(
+                                onClick={() => setSelectedAppointment(apt)} 
+                                className={`w-full mb-1 p-1 rounded text-[12px] text-left text-xs text-card transition-transform hover:scale-[1.02] cursor-pointer ${getStatusColor(
                                   apt.status
                                 )}`}
                               >
