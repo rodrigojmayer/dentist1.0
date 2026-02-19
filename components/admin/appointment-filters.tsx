@@ -30,15 +30,18 @@ export function AppointmentFilters({ filters, onFiltersChange }: AppointmentFilt
         <Select
           value={filters.status}
           onValueChange={(value) => onFiltersChange({ ...filters, status: value })}
-        >
-          <SelectTrigger id="status-filter">
-            <SelectValue placeholder="Todos los estados" />
+          >
+          <SelectTrigger 
+            id="status-filter"
+            className={"cursor-pointer"}
+          >
+            <SelectValue placeholder="Todos los estados"/>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Todos</SelectItem>
-            <SelectItem value="pending">Pendientes</SelectItem>
-            <SelectItem value="confirmed">Confirmados</SelectItem>
-            <SelectItem value="cancelled">Cancelados</SelectItem>
+            <SelectItem value="all" className={"cursor-pointer"}>Todos</SelectItem>
+            <SelectItem value="pending" className={"cursor-pointer"}>Pendientes</SelectItem>
+            <SelectItem value="confirmed" className={"cursor-pointer"}>Confirmados</SelectItem>
+            <SelectItem value="cancelled" className={"cursor-pointer"}>Cancelados</SelectItem>
           </SelectContent>
         </Select>
       </div>
