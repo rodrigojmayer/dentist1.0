@@ -16,10 +16,11 @@ import { useAppointments } from "@/hooks/use-appointments"
 export function AdminDashboard() {
   const { toast } = useToast() // <--- Agregá esta línea al principio
   // const [appointments, setAppointments] = useState<Appointment[]>([])
+  const today = new Date();
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState({
     status: "all",
-    date: "",
+    date: today.toISOString().split('T')[0],
   })
 
   const {
