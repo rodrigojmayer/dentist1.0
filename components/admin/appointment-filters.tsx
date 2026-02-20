@@ -53,6 +53,7 @@ export function AppointmentFilters({ filters, onFiltersChange }: AppointmentFilt
         <Input
           id="date-filter"
           type="date"
+          className={"cursor-pointer [&::-webkit-calendar-picker-indicator]:cursor-pointer"}
           value={filters.date}
           onChange={(e) => onFiltersChange({ ...filters, date: e.target.value })}
         />
