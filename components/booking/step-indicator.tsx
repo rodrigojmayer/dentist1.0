@@ -17,13 +17,34 @@ const steps: { key: BookingStep; label: string }[] = [
 export function StepIndicator({ currentStep,
   data,
   onStepChange }: StepIndicatorProps) {
+
   const currentIndex = steps.findIndex(s => s.key === currentStep)
 
+  const getStepValue = (stepKey: BookingStep) => {
+    switch (stepKey) {
+      case "location":
+        return data.locationId
+      case "professional":
+        return data.professionalId
+      case "datetime":
+        return data.date && data.time
+          ? `${data.date} ${data.time}`
+          : ""
+      case "patient":
+        return data.patientName
+      default:
+        return ""
+    }
+  }
+  
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between">
         {steps.map((step, index) => {
           const isClickable = index < currentIndex
+          const value = getStepValue(step.key)
+          const isCompleted = index < currentIndex
+          const isActive = index === currentIndex
 
           return(
             <div key={step.key} className="flex items-center flex-1">
@@ -56,7 +77,9 @@ export function StepIndicator({ currentStep,
                       : "text-muted-foreground"
                   )}
                 >
-                  {step.label}
+                  {isCompleted && value
+                    ? `${step.label}: ${value}`
+                    : step.label}
                 </span>
               </div>
               {/* {index < steps.length - 1 && (
