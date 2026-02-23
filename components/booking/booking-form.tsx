@@ -75,7 +75,9 @@ export function BookingForm() {
     <Card className="border-border shadow-lg">
       <CardContent className="p-6 md:p-8">
         {step !== "confirmation" && (
-          <StepIndicator currentStep={step} />
+          <StepIndicator currentStep={step} 
+  data={data}
+  onStepChange={setStep}/>
         )}
         
         {step === "location" && (
