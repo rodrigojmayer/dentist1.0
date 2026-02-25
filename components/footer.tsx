@@ -1,3 +1,4 @@
+"use client"
 import { Sun, Phone, MapPin, Instagram, Facebook } from "lucide-react"
 import Link from "next/link"
 
@@ -71,10 +72,13 @@ export function Footer() {
 
         <div className="border-t border-background/10 mt-12 pt-8 text-center text-background/50 text-sm">
           <p>&copy; {new Date().getFullYear()} Instituto Odontológico Especializado. Todos los derechos reservados.</p>
-              <span className="text-xl font-bold tracking-tight" >Boton para admin</span>
+          <Link
+            href="/admin"
+            className="text-xl font-bold tracking-tight cursor-pointer"
+          >
+            Boton para admin
+          </Link>
         </div>
-              {/* Hidden admin trigger for the owner */}
-
       </div>
     </footer>
   )
