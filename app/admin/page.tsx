@@ -1,7 +1,7 @@
 import { AdminDashboard } from "@/components/admin/admin-dashboard"
 
 export const metadata = {
-  title: "Panel de Administracion | Instituto Odontológico Especializado",
+  title: "Panel de Administracion | Instituto Odontológico Austral",
   description: "Gestion de turnos y citas"
 }
 
