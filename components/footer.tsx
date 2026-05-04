@@ -10,11 +10,12 @@ export function Footer() {
           <div className="md:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-4">
               <Sun className="h-8 w-8 text-accent" />
-              <span className="font-serif text-2xl font-semibold">Instituto Odontológico Especializado</span>
+              <span className="font-serif text-2xl font-semibold">Instituto Odontológico Austral</span>
             </Link>
-            <p className="text-background/70 mb-6 max-w-md">
+            {/* <p className="text-background/70 mb-6 max-w-md">
               Cuidando sonrisas en Rosario, Funes y San Lorenzo. Misma calidad, mismos profesionales, siempre cerca tuyo.
-            </p>
+              Cuidando sonrisas en San Lorenzo. Misma calidad, mismos profesionales, siempre cerca tuyo.
+            </p> */}
             <div className="flex gap-4">
               <a 
                 href="https://instagram.com" 
@@ -42,11 +43,13 @@ export function Footer() {
             <div className="space-y-3 text-background/70">
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4 flex-shrink-0" />
-                <span>3412701897</span>
+                {/* <span>3412701897</span> */}
+                <span>03476316589</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 flex-shrink-0" />
-                <span>9 de Julio 7109, Rosario</span>
+                {/* <span>9 de Julio 7109, Rosario</span> */}
+                <span>Sgto. Cabral 1465, San Lorenzo</span>
               </div>
             </div>
           </div>
@@ -60,8 +63,8 @@ export function Footer() {
               <Link href="/#nosotros" className="block text-background/70 hover:text-background transition-colors">
                 Nosotros
               </Link>
-              <Link href="/#sucursales" className="block text-background/70 hover:text-background transition-colors">
-                Sucursales
+              <Link href="/#contacto" className="block text-background/70 hover:text-background transition-colors">
+                Contacto
               </Link>
               <Link href="/reservar" className="block text-background/70 hover:text-background transition-colors">
                 Sacar turno
@@ -71,7 +74,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-background/10 mt-12 pt-8 text-center text-background/50 text-sm">
-          <p>&copy; {new Date().getFullYear()} Instituto Odontológico Especializado. Todos los derechos reservados.</p>
+          <p>&copy; {new Date().getFullYear()} Instituto Odontológico Austral. Todos los derechos reservados.</p>
           <Link
             href="/admin"
             className="text-xl font-bold tracking-tight cursor-pointer"
