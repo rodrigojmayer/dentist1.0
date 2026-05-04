@@ -15,7 +15,7 @@ export function Header() {
           <Link href="/" className="flex items-center gap-2">
             <Sun className="h-8 w-8 text-accent" />
             <span className="font-serif text-xl md:text-2xl font-semibold text-foreground">
-              Instituto Odontológico Especializado
+              Instituto Odontológico Austral
             </span>
           </Link>
 
@@ -26,8 +26,8 @@ export function Header() {
             <Link href="/#nosotros" className="text-muted-foreground hover:text-primary transition-colors">
               Nosotros
             </Link>
-            <Link href="/#sucursales" className="text-muted-foreground hover:text-primary transition-colors">
-              Sucursales
+            <Link href="/#contacto" className="text-muted-foreground hover:text-primary transition-colors">
+              Contacto
             </Link>
             <Link href="/#servicios" className="text-muted-foreground hover:text-primary transition-colors">
               Servicios
@@ -70,11 +70,11 @@ export function Header() {
                 Nosotros
               </Link>
               <Link 
-                href="/#sucursales" 
+                href="/#contacto" 
                 className="text-muted-foreground hover:text-primary transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Sucursales
+                Contacto
               </Link>
               <Link 
                 href="/#servicios" 
