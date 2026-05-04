@@ -3,8 +3,9 @@ import { Footer } from "@/components/footer"
 import { BookingForm } from "@/components/booking/booking-form"
 
 export const metadata = {
-  title: "Reservar Turno | Instituto Odontológico Especializado",
-  description: "Reserva tu turno online en Instituto Odontológico Especializado. Atencion odontologica en Rosario, Funes y San Lorenzo."
+  title: "Reservar Turno | Instituto Odontológico Austral",
+  // description: "Reserva tu turno online en Instituto Odontológico Austral. Atencion odontologica en Rosario, Funes y San Lorenzo."
+  description: "Reserva tu turno online en Instituto Odontológico Austral. Atencion odontologica en San Lorenzo."
 }
 
 export default function ReservarPage() {
