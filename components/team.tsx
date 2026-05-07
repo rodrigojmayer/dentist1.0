@@ -4,37 +4,37 @@ const team = [
   {
     name: "Od. Ana Marquez",
     specialties: "Alineadores invisibles - Ortodoncia - Botox - Odontopediatria - Odontologia general",
-    image: "/team/ana.jpg"
+    image: "/team/ana.png"
   },
   {
     name: "Od. Mailen Luque",
     specialties: "Cirugias - Implantes - Coronas sobre implantes - Frenectomias - Gingivectomias - Extracciones",
-    image: "/team/adriana.jpg"
+    image: "/team/mailen.png"
   },
   {
     name: "Od. Erica Fani",
     specialties: "Protesis - Estetica - Tratamientos de conducto - Extracciones - Odontologia general",
-    image: "/team/erica.jpg"
+    image: "/team/erica.png"
   },
   {
     name: "Od. Carla Perez",
-    specialties: "Ortodoncia - Ortopedia - Alineadores invisibles",
-    image: "/team/carla.jpg"
+    specialties: "Ortodoncia - Alineadores invisibles",
+    image: "/team/carla.png"
   },
   {
     name: "Od. Julieta Azcua",
     specialties: "Endodoncias - Protesis - Estetica - Odontologia general",
-    image: "/team/julieta.jpg"
+    image: "/team/julieta.png"
   },
   {
     name: "Od. Maria Diaz",
     specialties: "Odontopediatria - Odontologia general - Operatoria dental",
-    image: "/team/maria.jpg"
+    image: "/team/maria.png"
   },
   {
     name: "Od. Natalia Ojeda",
     specialties: "Odontologia general - Estetica - Extracciones",
-    image: "/team/natalia.jpg"
+    image: "/team/natalia.png"
   },
 ]
 
@@ -54,15 +54,23 @@ export function Team() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {team.map((member) => (
             <Card key={member.name} className="overflow-hidden border-border hover:shadow-lg transition-shadow">
-              <div className="aspect-[4/5] bg-muted relative">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center">
-                    <span className="text-3xl font-serif text-primary">
-                      {member.name.split(' ')[1]?.[0] || member.name[0]}
-                    </span>
+              {member.image ? 
+                <div className="h-90  ">
+                  <img src={member.image} alt={member.name} 
+                  className="w-full h-full object-cover"
+                  />
+                  </div>
+              :
+                <div className="aspect-[4/5] bg-muted relative">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="text-3xl font-serif text-primary">
+                            {member.name}
+                        </span>
+                      </div>
                   </div>
                 </div>
-              </div>
+              }
               <CardContent className="p-5">
                 <h3 className="font-semibold text-foreground mb-2">{member.name}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{member.specialties}</p>
