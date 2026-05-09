@@ -18,11 +18,11 @@ const features = [
     title: "Atencion personalizada",
     description: "Cada paciente es unico. Adaptamos los tratamientos a tus necesidades.",
   },
-  {
-    icon: Award,
-    title: "Equipamiento de calidad",
-    description: "Todas nuestras sucursales estan clinicamente equipadas con tecnologia moderna.",
-  },
+  // {
+  //   icon: Award,
+  //   title: "Equipamiento de calidad",
+  //   description: "Todas nuestras sucursales estan clinicamente equipadas con tecnologia moderna.",
+  // },
 ]
 
 export function WhyUs() {
@@ -36,7 +36,7 @@ export function WhyUs() {
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {features.map((feature) => (
             <div key={feature.title} className="text-center">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
