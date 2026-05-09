@@ -116,7 +116,7 @@ export function AdminDashboard() {
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
               <Sun className="h-8 w-8 text-accent" />
-              <span className="font-serif text-xl font-semibold">Instituto Odontológico Especializado</span>
+              <span className="font-serif text-xl font-semibold">Instituto Odontológico Austral</span>
             </Link>
             <span className="text-background/70 text-sm">Panel de Administracion</span>
           </div>
