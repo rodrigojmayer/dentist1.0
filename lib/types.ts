@@ -33,67 +33,74 @@ export interface Appointment {
 
 export const professionals: Professional[] = [
   {
-    id: "anabela-martinez",
-    name: "Od. Anabela Martinez",
+    id: "ana-marquez",
+    name: "Od. Ana Marquez",
     specialties: ["Alineadores invisibles", "Ortodoncia", "Botox", "Odontopediatria", "Odontologia general"],
-    availableLocations: ["rosario", "funes"]
+    // availableLocations: ["rosario", "funes"]
+    availableLocations: ["san-lorenzo"]
   },
   {
     id: "mailen-luque",
     name: "Od. Mailen Luque",
     specialties: ["Cirugias", "Implantes", "Coronas sobre implantes", "Frenectomias", "Gingivectomias", "Extracciones"],
-    availableLocations: ["rosario", "san-lorenzo"]
+    // availableLocations: ["rosario", "san-lorenzo"]
+    availableLocations: ["san-lorenzo"]
   },
   {
-    id: "sofia-fanelli",
-    name: "Od. Sofia Fanelli",
+    id: "erica-fani",
+    name: "Od. Erica Fani",
     specialties: ["Protesis", "Estetica", "Tratamientos de conducto", "Extracciones", "Odontologia general"],
-    availableLocations: ["rosario", "funes"]
+    // availableLocations: ["rosario", "funes"]
+    availableLocations: ["san-lorenzo"]
   },
   {
-    id: "daiana-lovino",
-    name: "Od. Daiana Lovino",
-    specialties: ["Ortodoncia", "Ortopedia", "Alineadores invisibles"],
-    availableLocations: ["funes", "san-lorenzo"]
+    id: "carla-perez",
+    name: "Od. Carla Perez",
+    specialties: ["Ortodoncia", "Alineadores invisibles"],
+    // availableLocations: ["funes", "san-lorenzo"]
+    availableLocations: ["san-lorenzo"]
   },
   {
-    id: "aldana-arroniz",
-    name: "Od. Aldana Arroniz",
+    id: "julieta-azcua",
+    name: "Od. Julieta Azcua",
     specialties: ["Endodoncias", "Protesis", "Estetica", "Odontologia general"],
-    availableLocations: ["rosario"]
+    // availableLocations: ["rosario"]
+    availableLocations: ["san-lorenzo"]
   },
   {
-    id: "mara-marin",
-    name: "Od. Mara Marin",
+    id: "maria-diaz",
+    name: "Od. Maria Diaz",
     specialties: ["Odontopediatria", "Odontologia general", "Operatoria dental"],
-    availableLocations: ["san-lorenzo", "funes"]
+    // availableLocations: ["san-lorenzo", "funes"]
+    availableLocations: ["san-lorenzo"]
   },
   {
-    id: "natasha-paulochenka",
-    name: "Od. Natasha Paulochenka",
+    id: "natalia-ojeda",
+    name: "Od. Natalia Ojeda",
     specialties: ["Odontologia general", "Estetica", "Extracciones"],
-    availableLocations: ["rosario", "san-lorenzo"]
+    // availableLocations: ["rosario", "san-lorenzo"]
+    availableLocations: ["san-lorenzo"]
   },
 ]
 
 export const locations: Location[] = [
-  {
-    id: "funes",
-    city: "Funes",
-    address: "Catamarca 1762",
-    phone: "3412427286"
-  },
-  {
-    id: "rosario",
-    city: "Rosario",
-    address: "9 de Julio 1209",
-    phone: "3412722087"
-  },
+  // {
+  //   id: "funes",
+  //   city: "Funes",
+  //   address: "Catamarca 1762",
+  //   phone: "3412427286"
+  // },
+  // {
+  //   id: "rosario",
+  //   city: "Rosario",
+  //   address: "9 de Julio 1209",
+  //   phone: "3412722087"
+  // },
   {
     id: "san-lorenzo",
     city: "San Lorenzo",
-    address: "Bv. Urquiza",
-    phone: "3476210367"
+    address: "Sgto. Cabral 1465",
+    phone: "03476316589",
   },
 ]
 
