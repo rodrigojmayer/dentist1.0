@@ -73,7 +73,7 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
     today.setHours(0, 0, 0, 0)
     
     // Disable past dates and weekends
-    return checkDate < today || checkDate.getDay() === 0
+    return checkDate < today || checkDate.getDay() === 0 || checkDate.getDay() === 6  //disabled dom and sab
   }
 
   const formatDateString = (day: number) => {
