@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { ArrowLeft, Calendar, Clock, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { createClient } from "@/lib/supabase/client"
 import type { TimeSlot } from "@/lib/types"
 
 interface DateTimeStepProps {
@@ -24,6 +25,9 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
   const [time, setTime] = useState(selectedTime)
   const [slots, setSlots] = useState<TimeSlot[]>([])
   const [loading, setLoading] = useState(false)
+  const [holidays, setHolidays] = useState<string[]>([])
+
+  const supabase = createClient()
 
   useEffect(() => {
     if (date) {
@@ -59,6 +63,23 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
     }
   }, [date, professionalId, locationId])
 
+  useEffect(() => {
+    async function fetchHolidays() {
+      const { data, error } = await supabase
+        .from("holidays")
+        .select("date")
+
+      if (error) {
+        console.error("Error cargando feriados:", error)
+        return
+      }
+
+      setHolidays(data.map(h => h.date))
+    }
+
+    fetchHolidays()
+  }, [])
+
   const getDaysInMonth = (year: number, month: number) => {
     return new Date(year, month + 1, 0).getDate()
   }
@@ -71,9 +92,14 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
     const checkDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
     const today = new Date()
     today.setHours(0, 0, 0, 0)
-    
+    const dateString = formatDateString(day)
+
     // Disable past dates and weekends
-    return checkDate < today || checkDate.getDay() === 0 || checkDate.getDay() === 6  //disabled dom and sab
+    return (
+      checkDate < today || 
+      checkDate.getDay() === 0 || checkDate.getDay() === 6  || //disabled dom and sab
+      holidays.includes(dateString)
+    )
   }
 
   const formatDateString = (day: number) => {
