@@ -10,12 +10,12 @@ const features = [
   },
   {
     icon: Clock,
-    title: "+5 anos de experiencia",
+    title: "+5 años de experiencia",
     description: "Anos de trayectoria cuidando la salud bucal de nuestros pacientes.",
   },
   {
     icon: Heart,
-    title: "Atencion personalizada",
+    title: "Atención personalizada",
     description: "Cada paciente es unico. Adaptamos los tratamientos a tus necesidades.",
   },
   // {
