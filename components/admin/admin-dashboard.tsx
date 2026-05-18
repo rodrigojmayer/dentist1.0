@@ -16,11 +16,18 @@ import { useAppointments } from "@/hooks/use-appointments"
 export function AdminDashboard() {
   const { toast } = useToast() // <--- Agregá esta línea al principio
   // const [appointments, setAppointments] = useState<Appointment[]>([])
-  const today = new Date();
+  // const today = new Date();
+  // Obtenemos la fecha de hoy en formato local YYYY-MM-DD sin desfasajes de zona horaria
+  const todayStr = new Date().toLocaleDateString("sv-SE") // Retorna "YYYY-MM-DD" basado en tu zona local
   const [loading, setLoading] = useState(true)
+  // MODIFICADO: Ahora 'date' es un objeto con rangos 'from' y 'to' (Ambos inician con HOY)
   const [filters, setFilters] = useState({
     status: "all",
-    date: today.toISOString().split('T')[0],
+    // date: today.toISOString().split('T')[0],
+    date: {
+      from: todayStr,
+      to: todayStr,
+    }
   })
 
   const {
@@ -94,9 +101,18 @@ export function AdminDashboard() {
   //   // }
   // }
 
+  // MODIFICADO: Lógica de filtrado por rango inclusivo (Desde / Hasta)
   const filteredAppointments = appointments.filter(apt => {
     if (filters.status !== "all" && apt.status !== filters.status) return false
-    if (filters.date && apt.date !== filters.date) return false
+    
+    // if (filters.date && apt.date !== filters.date) return false
+    
+    // Si hay fecha "desde", el turno debe ser igual o posterior
+    if (filters.date.from && apt.date < filters.date.from) return false
+    
+    // Si hay fecha "hasta", el turno debe ser igual o anterior
+    if (filters.date.to && apt.date > filters.date.to) return false
+
     return true
   })
 
@@ -105,7 +121,8 @@ export function AdminDashboard() {
     pending: appointments.filter(a => a.status === "pending").length,
     confirmed: appointments.filter(a => a.status === "confirmed").length,
     deleted: appointments.filter(a => a.status === "deleted").length,
-    today: appointments.filter(a => a.date === new Date().toISOString().split('T')[0]).length,
+    // today: appointments.filter(a => a.date === new Date().toISOString().split('T')[0]).length,
+    today: appointments.filter(a => a.date === todayStr).length,
   }
 
   return (
@@ -115,8 +132,9 @@ export function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
-              <Sun className="h-8 w-8 text-accent" />
-              <span className="font-serif text-xl font-semibold">Instituto Odontológico Austral</span>
+              {/* <Sun className="h-8 w-8 text-accent" /> */}
+              <img src="/Gemini_Generated_Image_qswhjbqswhjbqswh-removebg-preview8.png" className="h-15 w-auto object-contain block pb-2"/>
+               <span className="font-serif text-xl font-semibold">Instituto Odontológico Austral</span>
             </Link>
             <span className="text-background/70 text-sm">Panel de Administracion</span>
           </div>

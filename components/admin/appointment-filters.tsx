@@ -10,9 +10,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+// MODIFICADO: Ajustamos la interfaz para reflejar la nueva estructura de rango de fechas
 interface Filters {
   status: string
-  date: string
+  // date: string
+  date: {
+    from: string
+    to: string
+  }
 }
 
 interface AppointmentFiltersProps {
@@ -46,7 +51,7 @@ export function AppointmentFilters({ filters, onFiltersChange }: AppointmentFilt
         </Select>
       </div>
 
-      <div className="flex-1 max-w-xs">
+      {/* <div className="flex-1 max-w-xs">
         <Label htmlFor="date-filter" className="mb-2 block text-sm">
           Fecha
         </Label>
@@ -56,6 +61,37 @@ export function AppointmentFilters({ filters, onFiltersChange }: AppointmentFilt
           className={"cursor-pointer [&::-webkit-calendar-picker-indicator]:cursor-pointer"}
           value={filters.date}
           onChange={(e) => onFiltersChange({ ...filters, date: e.target.value })}
+        />
+      </div> */}
+      {/* MODIFICADO: Inputs de Rango de Fechas (Desde / Hasta) */}
+      <div className="flex-1 max-w-xs w-full">
+        <Label htmlFor="date-from-filter" className="mb-2 block text-sm">
+          Fecha Desde
+        </Label>
+        <Input
+          id="date-from-filter"
+          type="date"
+          className="cursor-pointer [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+          value={filters.date.from}
+          onChange={(e) => onFiltersChange({ 
+            ...filters, 
+            date: { ...filters.date, from: e.target.value } 
+          })}
+        />
+      </div>
+      <div className="flex-1 max-w-xs w-full">
+        <Label htmlFor="date-to-filter" className="mb-2 block text-sm">
+          Fecha Hasta
+        </Label>
+        <Input
+          id="date-to-filter"
+          type="date"
+          className="cursor-pointer [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+          value={filters.date.to}
+          onChange={(e) => onFiltersChange({ 
+            ...filters, 
+            date: { ...filters.date, to: e.target.value } 
+          })}
         />
       </div>
     </div>
