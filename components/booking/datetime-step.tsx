@@ -40,7 +40,13 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
           const now = new Date()
           const todayStr = now.toISOString().split("T")[0]
           const processedSlots = fetchedSlots.map(slot => {
-            // Si la fecha elegida es hoy, comparamos las horas
+            // 1. Deshabilitar las 12:00 (o cualquier turno que empiece con "12:") para TODOS los días
+          if (slot.time.startsWith("12:0")) {
+            return { ...slot, available: false }
+          }
+
+          // 2. Lógica para filtrar horarios pasados (SOLO si la fecha elegida es hoy)
+          // Si la fecha elegida es hoy, comparamos las horas
             if (date === todayStr) {
               const [slotHour, slotMinutes] = slot.time.split(":").map(Number)
               const currentTime = now.getHours() * 60 + now.getMinutes()
@@ -98,7 +104,7 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
     today.setHours(0, 0, 0, 0)
     const dateString = formatDateString(day)
 
-    // Disable past dates and weekends
+    // Disable past dates,weekends, holiday, + three months in the future
     return (
       checkDate < today || 
       checkDate > maxDateUntil || 
