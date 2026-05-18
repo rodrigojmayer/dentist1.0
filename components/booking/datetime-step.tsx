@@ -38,7 +38,12 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
           const fetchedSlots: TimeSlot[] = data.slots || []
           // --- Lógica para filtrar horarios pasados ---
           const now = new Date()
-          const todayStr = now.toISOString().split("T")[0]
+          // const todayStr = now.toISOString().split("T")[0]
+          // OBTENER LA FECHA LOCAL EN FORMATO YYYY-MM-DD (Evita el error de ISOString)
+          const year = now.getFullYear()
+          const month = String(now.getMonth() + 1).padStart(2, '0')
+          const day = String(now.getDate()).padStart(2, '0')
+          const todayStr = `${year}-${month}-${day}`
           const processedSlots = fetchedSlots.map(slot => {
             // 1. Deshabilitar las 12:00 (o cualquier turno que empiece con "12:") para TODOS los días
           if (slot.time.startsWith("12:0")) {
