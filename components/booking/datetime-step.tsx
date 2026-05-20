@@ -113,6 +113,7 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
     return (
       checkDate < today || 
       checkDate > maxDateUntil || 
+      (checkDate.getDate() === today.getDate() && checkDate.getMonth() === today.getMonth() && today.getHours()<17) || 
       checkDate.getDay() === 0 || checkDate.getDay() === 6  || //disabled dom and sab
       holidays.includes(dateString)
     )
