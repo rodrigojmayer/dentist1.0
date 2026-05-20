@@ -100,20 +100,25 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
   }
 
   const isDateDisabled = (day: number) => {
-    const checkDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
     const today = new Date()
+    const checkDate = new Date(
+      currentMonth.getFullYear(), 
+      currentMonth.getMonth(), 
+      day,
+      17
+    )
+    
+    // today.setHours(18, 0, 0, 0)
     const maxDateUntil = new Date()
     maxDateUntil.setMonth(today.getMonth() + 3)
     maxDateUntil.setDate(0)
     maxDateUntil.setHours(0, 0, 0, 0)
-    today.setHours(0, 0, 0, 0)
     const dateString = formatDateString(day)
 
     // Disable past dates,weekends, holiday, + three months in the future
     return (
       checkDate < today || 
       checkDate > maxDateUntil || 
-      (checkDate.getDate() === today.getDate() && checkDate.getMonth() === today.getMonth() && today.getHours()<17) || 
       checkDate.getDay() === 0 || checkDate.getDay() === 6  || //disabled dom and sab
       holidays.includes(dateString)
     )
