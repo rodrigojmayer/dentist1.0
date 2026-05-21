@@ -10,7 +10,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
 import type { Appointment } from "@/lib/types"
-import { professionals, locations } from "@/lib/types"
+// import { professionals, locations } from "@/lib/types"
+import { useProfessionalContext } from "@/context/professionalsContext"
+import { locations } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 interface AppointmentsTableProps {
@@ -27,6 +29,7 @@ const statusConfig = {
 }
 
 export function AppointmentsTable({ appointments, onStatusChange, onDelete }: AppointmentsTableProps) {
+  const { professionals, loading: loadingPros } = useProfessionalContext()
   const formatDate = (dateStr: string) => {
     const [year, month, day] = dateStr.split('-')
     return `${day}/${month}/${year}`
