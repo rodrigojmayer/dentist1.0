@@ -2,6 +2,7 @@ import React from "react"
 import type { Metadata } from 'next'
 import { Poppins, Playfair_Display } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { ProfessionalProvider } from "../context/professionalsContext"
 import './globals.css'
 
 const poppins = Poppins({ 
@@ -23,15 +24,15 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: '/icon-light-32x32.png',
+        url: '/Gemini_Generated_Image_qswhjbqswhjbqswh-removebg-preview2.png',
         media: '(prefers-color-scheme: light)',
       },
       {
-        url: '/icon-dark-32x32.png',
+        url: '/Gemini_Generated_Image_qswhjbqswhjbqswh-removebg-preview7.png',
         media: '(prefers-color-scheme: dark)',
       },
       {
-        url: '/icon.svg',
+        url: '/Gemini_Generated_Image_qswhjbqswhjbqswh-removebg-preview8.png',
         type: 'image/svg+xml',
       },
     ],
@@ -47,8 +48,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans antialiased`}>
-        {children}
-        <Analytics />
+        <ProfessionalProvider>
+          {children}
+          <Analytics />
+        </ProfessionalProvider>
       </body>
     </html>
   )
