@@ -7,7 +7,9 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import type { BookingData } from "./booking-form"
-import { professionals, locations } from "@/lib/types"
+// import { professionals, locations } from "@/lib/types"
+import { useProfessionalContext } from "@/context/professionalsContext"
+import { locations } from "@/lib/types"
 
 interface PatientInfoStepProps {
   data: BookingData
@@ -19,6 +21,7 @@ interface PatientInfoStepProps {
 export function PatientInfoStep({ data, onUpdate, onSubmit, onBack }: PatientInfoStepProps) {
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const { professionals, loading: loadingPros } = useProfessionalContext()
 
   const professional = professionals.find(p => p.id === data.professionalId)
   const location = locations.find(l => l.id === data.locationId)
