@@ -1,7 +1,8 @@
 "use client"
 
 import { User, ArrowLeft } from "lucide-react"
-import { professionals } from "@/lib/types"
+// import { professionals } from "@/lib/types"
+import { useProfessionalContext } from "@/context/professionalsContext"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
@@ -13,6 +14,7 @@ interface ProfessionalStepProps {
 }
 
 export function ProfessionalStep({ locationId, selectedProfessional, onSelect, onBack }: ProfessionalStepProps) {
+  const { professionals, loading: loadingPros } = useProfessionalContext()
   const availableProfessionals = professionals.filter(p => 
     p.availableLocations.includes(locationId)
   )
