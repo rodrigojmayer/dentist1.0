@@ -1,0 +1,1 @@
+SELECT simular_reservas_reales_semanal();
