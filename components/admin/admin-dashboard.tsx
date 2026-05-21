@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { Sun, Calendar, Users, Clock, RefreshCw, UserCircle, ChevronRight } from "lucide-react"
-import { professionals } from "@/lib/types"
+// import { professionals } from "@/lib/types"
+import { useProfessionalContext } from "@/context/professionalsContext"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,6 +15,7 @@ import { useAppointments } from "@/hooks/use-appointments"
 
 
 export function AdminDashboard() {
+  const { professionals, loading: loadingPros } = useProfessionalContext()
   const { toast } = useToast() // <--- Agregá esta línea al principio
   // const [appointments, setAppointments] = useState<Appointment[]>([])
   // const today = new Date();
@@ -213,25 +215,31 @@ export function AdminDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-              {professionals.map((professional) => (
-                <Link
-                  key={professional.id}
-                  href={`/admin/${professional.id}`}
-                  className="group flex items-center justify-between p-3 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
-                >
-                  <div>
-                    <p className="font-medium text-foreground group-hover:text-primary transition-colors">
-                      {professional.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {professional.specialties[0]}
-                    </p>
-                  </div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                </Link>
-              ))}
-            </div>
+            {loadingPros ? (
+              <div className="text-sm text-muted-foreground p-2">Cargando profesionales...</div>
+            ) : !Array.isArray(professionals) || professionals.length === 0 ? (
+              <div className="text-sm text-muted-foreground p-2">No se encontraron profesionales.</div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                {professionals.map((professional) => (
+                  <Link
+                    key={professional.id}
+                    href={`/admin/${professional.id}`}
+                    className="group flex items-center justify-between p-3 rounded-lg border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+                  >
+                    <div>
+                      <p className="font-medium text-foreground group-hover:text-primary transition-colors">
+                        {professional.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {professional.specialties[0]}
+                      </p>
+                    </div>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                  </Link>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
 
