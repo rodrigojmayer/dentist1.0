@@ -12,6 +12,59 @@ export async function GET(request: NextRequest) {
   const startDate = searchParams.get("startDate")
   const endDate = searchParams.get("endDate")
 
+  // 1. CAPTURAMOS EL NUEVO PARÁMETRO DE MES
+  const month = searchParams.get("month") // Espera un formato "YYYY-MM" (Ej: "2026-05")
+
+  // ==========================================
+  // NUEVA LÓGICA: FILTRO MENSUAL DE DÍAS LLENOS
+  // ==========================================
+  if (month && professionalId && locationId) {
+    // Buscamos TODOS los turnos activos de ese mes para ese profesional y locación
+    const { data: monthAppointments, error: monthError } = await supabase
+      .from("appointments")
+      .select("date, time")
+      .like("date", `${month}-%`) // Filtra que la fecha empiece con "YYYY-MM-"
+      .eq("professional_id", professionalId)
+      .not("status", "in", '("cancelled", "deleted")')
+
+    if (monthError) {
+      return NextResponse.json({ error: monthError.message }, { status: 500 })
+    }
+
+    // Agrupamos los turnos reservados por día
+    // Estructura resultante: { "2026-05-20": ["09:00", "10:30"], "2026-05-21": [...] }
+    const bookingsByDay: Record<string, string[]> = {}
+    monthAppointments?.forEach(app => {
+      if (!bookingsByDay[app.date]) {
+        bookingsByDay[app.date] = []
+      }
+      bookingsByDay[app.date].push(app.time)
+    })
+
+    const fullyBookedDates: string[] = []
+
+    // Evaluamos cada día que tiene reservas para ver si se completó
+    Object.keys(bookingsByDay).forEach(currentDate => {
+      const bookedTimes = bookingsByDay[currentDate]
+      
+      // Generamos la plantilla total de turnos teóricos para ese día concreto
+      // (Usa la misma función que ya tienes importada para saber cuántos turnos existen en total)
+      const allSlots = generateTimeSlots(currentDate, [])
+      
+      
+      // Filtramos los turnos teóricos quitando los que de por sí están bloqueados globalmente (como los de las "12:0")
+      const totalAvailableSlotsCount = allSlots.filter(slot => !slot.time.startsWith("12:0")).length
+
+      // Si la cantidad de turnos ya reservados es igual o mayor a los turnos reales que ofrece el día...
+      if (bookedTimes.length >= totalAvailableSlotsCount) {
+        fullyBookedDates.push(currentDate) // ¡Día agotado!
+      }
+    })
+
+    // Devolvemos la lista al frontend para que la reciba el useEffect que armamos antes
+    return NextResponse.json({ fullyBookedDates })
+  }
+
   if (getSlots && date && professionalId && locationId) {
     // Get booked times for the specific date, professional, and location
     const { data: bookedAppointments } = await supabase
@@ -85,6 +138,35 @@ export async function POST(request: NextRequest) {
     if (!patientName || !patientEmail || !patientPhone || !professionalId || !locationId || !date || !time) {
       return NextResponse.json(
         { error: "Todos los campos obligatorios deben completarse" },
+        { status: 400 }
+      )
+    }
+
+    // 🔥 2. CONTROL DE FECHA Y HORA PASADA (Candado de Backend)
+    const now = new Date()
+    now.setHours(now.getHours())
+    now.setMinutes(now.getMinutes() + 30)
+    
+    // Creamos el objeto Date uniendo la fecha y hora recibida (ej: "2026-05-21T09:00:00")
+    // Usamos el formato local o agregamos la nomenclatura de la fecha
+    const appointmentDateTime = new Date(`${date}T${time}:00`)
+
+    console.log("now: ", now)
+    console.log("appointmentDateTime: ", appointmentDateTime)
+    console.log("appointmentDateTime <= now: ", appointmentDateTime <= now)
+
+    // Si la conversión falla por algún motivo o da una fecha inválida
+    if (isNaN(appointmentDateTime.getTime())) {
+      return NextResponse.json(
+        { error: "El formato de fecha u hora es inválido" },
+        { status: 400 }
+      )
+    }
+
+    // Comparamos los milisegundos estrictos
+    if (appointmentDateTime <= now) {
+      return NextResponse.json(
+        { error: "No podés reservar un turno en una fecha u hora que ya pasó" },
         { status: 400 }
       )
     }
