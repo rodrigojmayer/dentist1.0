@@ -1,4 +1,5 @@
 "use client"
+import Image from "next/image"
 import { Sun, Phone, MapPin, Instagram, Facebook } from "lucide-react"
 import Link from "next/link"
 
@@ -9,7 +10,8 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-12">
           <div className="md:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <Sun className="h-8 w-8 text-accent" />
+              {/* <Sun className="h-8 w-8 text-accent" /> */}
+              <img src="/Gemini_Generated_Image_qswhjbqswhjbqswh-removebg-preview8.png" className="h-15 w-auto object-contain block pb-2"/>
               <span className="font-serif text-2xl font-semibold">Instituto Odontológico Austral</span>
             </Link>
             {/* <p className="text-background/70 mb-6 max-w-md">
