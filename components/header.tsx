@@ -13,7 +13,8 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           <Link href="/" className="flex items-center gap-2">
-            <Sun className="h-8 w-8 text-accent" />
+            {/* <Sun className="h-8 w-8 text-accent" /> */}
+            <img src="/Gemini_Generated_Image_qswhjbqswhjbqswh-removebg-preview2.png" className="h-15 w-auto object-contain block pb-2"/>
             <span className="font-serif text-xl md:text-2xl font-semibold text-foreground">
               Instituto Odontológico Austral
             </span>
