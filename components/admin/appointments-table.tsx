@@ -16,6 +16,13 @@ import type { Appointment } from "@/lib/types"
 import { useProfessionalContext } from "@/context/professionalsContext"
 import { locations } from "@/lib/types"
 import { cn } from "@/lib/utils"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface AppointmentsTableProps {
   appointments: Appointment[]
@@ -82,83 +89,107 @@ export function AppointmentsTable({ appointments, onStatusChange, onDelete }: Ap
   })
 
   return (
-    <div className="overflow-x-auto w-full rounded-lg border border-border bg-background min-h-[calc(70vh)] flex flex-col justify-between">
+    <div className="overflow-x-auto w-full rounded-lg border border-border bg-background min-h-[calc(90vh)] flex flex-col justify-between">
       <div className="flex-1">
         <table className="w-full text-left border-collapse table-fixed">
-          <thead className="bg-muted/50 border-b border-border">
+          <thead className="bg-slate-400 border-b border-border text-white">
             <tr>
-              <th className="text-center p-4 font-medium text-muted-foreground text-sm w-[17%]">Paciente</th>
-              <th className="text-center p-4 font-medium text-muted-foreground text-sm hidden md:table-cell w-[28%]">Contacto</th>
-              <th className="text-center p-4 font-medium text-muted-foreground text-sm w-[15%]">Profesional</th>
-              <th className="text-center p-4 font-medium text-muted-foreground text-sm hidden lg:table-cell w-[12%]">Sucursal</th>
-              <th className="text-center p-4 font-medium text-muted-foreground text-sm w-[13%]">Fecha/Hora</th>
-              <th className="text-center p-4 font-medium text-muted-foreground text-sm w-[15%]">Estado</th>
-              <th className="text-center p-4 font-medium text-muted-foreground text-sm w-[110px]">Acciones</th>
+              <th className="text-center pt-2 font-medium  text-sm w-[17%] cursor-pointer">Paciente</th>
+              <th className="text-center pt-2 font-medium  text-sm hidden md:table-cell w-[28%] cursor-pointer">Contacto</th>
+              <th className="text-center pt-2 font-medium  text-sm w-[15%] cursor-pointer">Profesional</th>
+              <th className="text-center pt-2 font-medium  text-sm hidden lg:table-cell w-[12%] cursor-pointer">Sucursal</th>
+              <th className="text-center pt-2 font-medium  text-sm w-[13%] cursor-pointer">Fecha/Hora</th>
+              <th className="text-center pt-2 font-medium  text-sm w-[15%] cursor-pointer">Estado</th>
+              <th className="text-center pt-2 font-medium  text-sm w-[110px] cursor-pointer">Acciones</th>
             </tr>
 
             {/* Fila 2: Inputs de Filtros integrados por columna */}
-            <tr className="bg-muted/30 border-b border-border drop-shadow-sm">
+            <tr>
               {/* Filtro Paciente */}
-              <td className="p-2 pl-4 text-center ">
+              <td className="px-2  text-center">
                 <div className="relative">
                   <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
                   <Input
                     placeholder="Buscar paciente..."
                     value={patientFilter}
                     onChange={(e) => setPatientFilter(e.target.value)}
-                    className="h-8 pl-8 text-xs bg-background max-w-[180px]"
+                    className="h-8 pl-8 text-xs text-foreground bg-background max-w-[180px]"
                   />
                 </div>
               </td>
-              {/* Espejo de contacto (oculto en md como la cabecera) */}
               <td className="p-2 text-center hidden md:table-cell">
-                <span className="text-xs text-muted-foreground/50 italic">Búsqueda integrada a la izq.</span>
+                <span className="text-xs italic">Búsqueda integrada a la izq.</span>
               </td>
-              {/* Filtro Profesional */}
-              <td className="p-2 text-center">
-                <select
-                  value={professionalFilter}
-                  onChange={(e) => setProfessionalFilter(e.target.value)}
-                  className="h-8 w-full max-w-[160px] rounded-md border border-input bg-background px-2 py-1 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+              <td className="px-2 text-center">
+                <Select 
+                  value={professionalFilter} 
+                  onValueChange={(value) => setProfessionalFilter(value)}
                 >
-                  <option value="all">Todos</option>
-                  {professionals.map(p => (
-                    <option key={p.id} value={p.id}>{p.name}</option>
-                  ))}
-                </select>
+                  <SelectTrigger className="h-8 w-full max-w-[160px] text-xs cursor-pointer bg-background text-foreground">
+                    <SelectValue placeholder="Todos" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all" className="cursor-pointer text-xs">
+                      Todos
+                    </SelectItem>
+                    {professionals.map((p) => (
+                      <SelectItem key={p.id} value={p.id} className="cursor-pointer text-xs">
+                        {p.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </td>
-              {/* Filtro Sucursal */}
-              <td className="p-2 text-center hidden lg:table-cell">
-                <select
-                  value={locationFilter}
-                  onChange={(e) => setLocationFilter(e.target.value)}
-                  className="h-8 w-full max-w-[130px] rounded-md border border-input bg-background px-2 py-1 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+              <td className="px-2 text-center hidden lg:table-cell">
+                <Select 
+                  value={locationFilter} 
+                  onValueChange={(value) => setLocationFilter(value)}
                 >
-                  <option value="all">Todas</option>
-                  {locations.map(l => (
-                    <option key={l.id} value={l.id}>{l.city}</option>
-                  ))}
-                </select>
+                  <SelectTrigger className="h-8 w-full max-w-[160px] text-xs cursor-pointer bg-background text-foreground">
+                    <SelectValue placeholder="Todos" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all" className="cursor-pointer text-xs">
+                      Todas
+                    </SelectItem>
+                    {locations.map((p) => (
+                      <SelectItem key={p.id} value={p.id} className="cursor-pointer text-xs">
+                        {p.city}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </td>
-              {/* Columna Fecha (El rango global ya está afuera en AdminDashboard) */}
-              <td className="p-2 text-center">
-                <span className="text-xs text-muted-foreground/50 italic">Filtrado por rango arriba</span>
+              <td className="p-0 text-center">
+                {/* <span className="text-xs text-muted-foreground/50 italic">Filtrado por rango arriba</span> */}
               </td>
               {/* Filtro Estado */}
-              <td className="p-2 text-center">
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="h-8 w-full max-w-[120px] rounded-md border border-input bg-background px-2 py-1 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+              <td className="px-0 text-center">
+                <Select 
+                  value={statusFilter} 
+                  onValueChange={(value) => setStatusFilter(value)}
                 >
-                  <option value="all">Todos</option>
-                  <option value="pending">Pendientes</option>
-                  <option value="confirmed">Confirmados</option>
-                  <option value="cancelled">Cancelados</option>
-                </select>
+                  <SelectTrigger className="h-8 w-full max-w-[160px] text-xs cursor-pointer bg-background text-foreground">
+                    <SelectValue placeholder="Todos" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all" className="cursor-pointer text-xs">
+                      Todos
+                    </SelectItem>
+                    <SelectItem value="pending" className="cursor-pointer text-xs">
+                      Pendientes
+                    </SelectItem>
+                    <SelectItem value="confirmed" className="cursor-pointer text-xs">
+                      Confirmados
+                    </SelectItem>
+                    <SelectItem value="cancelled" className="cursor-pointer text-xs">
+                      Cancelados
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </td>
               {/* Botón de limpiar filtros rápidos */}
-              <td className="p-2 text-center pr-4">
+              <td className="px-2 text-center pr-4">
                 {(patientFilter || professionalFilter !== "all" || locationFilter !== "all" || statusFilter !== "all") && (
                   <Button 
                     variant="ghost" 
@@ -169,7 +200,7 @@ export function AppointmentsTable({ appointments, onStatusChange, onDelete }: Ap
                       setLocationFilter("all")
                       setStatusFilter("all")
                     }}
-                    className="h-7 text-[11px] text-destructive hover:text-destructive hover:bg-destructive/10 px-2"
+                    className="h-7 text-[11px]  hover:text-white bg-destructive/40 hover:bg-destructive/70 px-2 cursor-pointer"
                   >
                     Limpiar
                   </Button>
@@ -183,7 +214,7 @@ export function AppointmentsTable({ appointments, onStatusChange, onDelete }: Ap
             <tbody className="divide-y divide-border">
               {/* 3. Mapeamos el array ya filtrado por las columnas */}
               {filteredAppointments.map((appointment) => (
-                <tr key={appointment.id} className="hover:bg-muted/30 transition-colors">
+                <tr key={appointment.id} className="border-b border-border odd:bg-white even:bg-blue-50  odd:hover:bg-black/[0.1] even:hover:bg-blue-200 transition-colors">
                   <td className="p-4 text-center">
                     <div className="font-medium text-foreground">{appointment.patientName}</div>
                     <div className="text-sm text-muted-foreground md:hidden">
