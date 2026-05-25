@@ -247,7 +247,7 @@ export function AdminDashboard() {
         <AppointmentFilters filters={filters} onFiltersChange={setFilters} />
 
         {/* Table */}
-        <Card>
+        <Card className="border-none shadow-none bg-transparent">
           <CardContent className="p-0">
             {loading ? (
               <div className="p-8 text-center text-muted-foreground">
