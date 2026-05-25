@@ -290,156 +290,182 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
 
       {/* Dialog con detalles del turno */}
       <Dialog open={!!selectedAppointment} onOpenChange={() => setSelectedAppointment(null)}>
-        <DialogContent className="sm:max-w-md pt-12">
-          <DialogHeader>
-            <DialogTitle className="flex items-center justify-between">
-              <span>Detalle del Turno</span>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-              <Badge
-                className={`${getStatusColor(selectedAppointment?.status || "")} text-card border-0 cursor-pointer hover:scale-105 transition-transform`}
-              >
-                {getStatusText(selectedAppointment?.status || "")}
-              </Badge>
-                  {/* <Button variant="ghost" size="sm" className="h-8 w-8 p-0 cursor-pointer">
-                    <MoreHorizontal className="h-4 w-4" />
-                    <span className="sr-only">Abrir menu</span>
-                  </Button> */}
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent align="end">
-                  {selectedAppointment?.status !== "confirmed" && (
-                    <DropdownMenuItem
-                      onClick={() => {
-
-                        selectedAppointment && 
-                        handleStatusChange(selectedAppointment.id, "confirmed")
-                        
-                        selectedAppointment && setSelectedAppointment({...selectedAppointment, status:"confirmed"} as AppointmentWithService)
-                      }
-                      }
-                    >
-                      <Check className="h-4 w-4 mr-2 text-green-600" />
-                      Confirmar
-                    </DropdownMenuItem>
-                  )}
-
-                  {selectedAppointment?.status !== "cancelled" && (
-                    <DropdownMenuItem
-                      onClick={() => {
-
-                        selectedAppointment &&
-                        handleStatusChange(selectedAppointment.id, "cancelled")
-                        selectedAppointment && setSelectedAppointment({...selectedAppointment, status:"cancelled"} as AppointmentWithService)
-                       
-                        selectedAppointment && setSelectedAppointment({...selectedAppointment, status:"cancelled"} as AppointmentWithService)
-                      }
-                      }
-                    >
-                      <X className="h-4 w-4 mr-2 text-amber-600" />
-                      Cancelar
-                    </DropdownMenuItem>
-                  )}
-
-                  <DropdownMenuItem
-                    onClick={() =>
-                      selectedAppointment &&
-                      handleDelete(selectedAppointment.id)
-                    }
-                    className="text-destructive focus:text-destructive"
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Eliminar
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+        <DialogContent className="sm:max-w-md p-3">
+          {/* 2. Cabecera manual: Reemplazamos DialogHeader por un div común para evitar los paddings fantasmas del framework */}
+          <DialogHeader className="p-0 space-y-0 ">
+            {/* Fila del título principal. pr-8 le da espacio a la derecha para que NUNCA pise la X de cerrar */}
+            <DialogTitle className="text-lg font-semibold tracking-tight text-foreground flex items-center justify-between w-full pr-8">
+              <span>
+                Detalle del Turno
+              </span>
             </DialogTitle>
           </DialogHeader>
-          {selectedAppointment && (
-            <div className="space-y-4">
-              {/* Fecha y Hora */}
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                    <Clock className="h-4 w-4" />
-                    Fecha y Hora
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <p className="font-semibold">
-                    {new Date(selectedAppointment.date + "T12:00:00").toLocaleDateString("es-AR", {
-                      weekday: "long",
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                    })}
-                  </p>
-                  <p className="text-lg text-primary font-bold">{selectedAppointment.time} hs</p>
-                </CardContent>
-              </Card>
+              
+              <div className="flex justify-start ">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild >
+                <Badge
+                  className={`${getStatusColor(selectedAppointment?.status || "")} text-card border-3 cursor-pointer hover:scale-105 transition-transform`}
+                >
+                  {getStatusText(selectedAppointment?.status || "")}
+                </Badge>
+                    {/* <Button variant="ghost" size="sm" className="h-8 w-8 p-0 cursor-pointer">
+                      <MoreHorizontal className="h-4 w-4" />
+                      <span className="sr-only">Abrir menu</span>
+                    </Button> */}
+                  </DropdownMenuTrigger>
 
-              {/* Informacion del Paciente */}
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                    <User className="h-4 w-4" />
-                    Paciente
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0 space-y-2">
-                  <p className="font-semibold text-lg">{selectedAppointment.patientName}</p>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Mail className="h-4 w-4" />
-                    <a href={`mailto:${selectedAppointment.patientEmail}`} className="hover:text-primary">
-                      {selectedAppointment.patientEmail}
-                    </a>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Phone className="h-4 w-4" />
-                    <a href={`tel:${selectedAppointment.patientPhone}`} className="hover:text-primary">
-                      {selectedAppointment.patientPhone}
-                    </a>
-                  </div>
-                </CardContent>
-              </Card>
+                  <DropdownMenuContent align="start" className="p-0.5">
+                    {selectedAppointment?.status !== "confirmed" && (
+                      <DropdownMenuItem
+                        className="cursor-pointer"
+                        onClick={() => {
 
-              {/* Ubicacion y Servicio */}
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                    <Stethoscope className="h-4 w-4" />
-                    Servicio y Ubicacion
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0 space-y-2">
-                  {selectedAppointment.service && (
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary">{selectedAppointment.service}</Badge>
+                          selectedAppointment && 
+                          handleStatusChange(selectedAppointment.id, "confirmed")
+                          
+                          selectedAppointment && setSelectedAppointment({...selectedAppointment, status:"confirmed"} as AppointmentWithService)
+                        }
+                        }
+                      >
+                        <Check className="h-4 w-4 mr-2 text-green-600" />
+                        Confirmar
+                      </DropdownMenuItem>
+                    )}
+
+                    {selectedAppointment?.status !== "cancelled" && (
+                      <DropdownMenuItem
+                        className="cursor-pointer"
+                        onClick={() => {
+
+                          selectedAppointment &&
+                          handleStatusChange(selectedAppointment.id, "cancelled")
+                          selectedAppointment && setSelectedAppointment({...selectedAppointment, status:"cancelled"} as AppointmentWithService)
+                        
+                          selectedAppointment && setSelectedAppointment({...selectedAppointment, status:"cancelled"} as AppointmentWithService)
+                        }
+                        }
+                      >
+                        <X className="h-4 w-4 mr-2 text-amber-600" />
+                        Cancelar
+                      </DropdownMenuItem>
+                    )}
+
+                    <DropdownMenuItem
+                      className="text-destructive focus:text-destructive cursor-pointer"
+                      onClick={() =>
+                        selectedAppointment &&
+                        handleDelete(selectedAppointment.id)
+                      }
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Eliminar
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+              
+              {selectedAppointment && (
+                <div className="space-y-1">
+                  {/* Fecha y Hora */}
+                  <Card className="h-25">
+                    {/* <CardHeader className="pb-0"> */}
+                    <div className="px-6 pb-0 -mt-4">
+                      <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                        <Clock className="h-4 w-4" />
+                        Fecha y Hora
+                      </CardTitle>
+                    {/* </CardHeader> */}
                     </div>
-                  )}
-                  <div className="flex items-center gap-2 text-sm">
-                    <MapPin className="h-4 w-4 text-muted-foreground" />
-                    <span>{getLocationName(selectedAppointment.locationId)}</span>
-                  </div>
-                </CardContent>
-              </Card>
+                    {/* <CardContent className="pt-0"> */}
+                    <div className="px-6 pb-0 -mt-4">
+                      <p className="font-semibold">
+                        {new Date(selectedAppointment.date + "T12:00:00").toLocaleDateString("es-AR", {
+                          weekday: "long",
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </p>
+                      <p className="text-lg text-primary font-bold">{selectedAppointment.time} hs</p>
+                    {/* </CardContent> */}
+                    </div>
+                  </Card>
 
-              {/* Notas */}
-              {selectedAppointment.notes && (
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                      <FileText className="h-4 w-4" />
-                      Notas
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-sm">{selectedAppointment.notes}</p>
-                  </CardContent>
-                </Card>
+                  {/* Informacion del Paciente */}
+                  <Card className="h-30">
+                    {/* <CardHeader className="pb-0"> */}
+                    <div className="px-6 pb-0 -mt-4">
+                      <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                        <User className="h-4 w-4" />
+                        Paciente
+                      </CardTitle>
+                    {/* </CardContent> */}
+                    </div>
+                    {/* <CardContent className="pt-0 space-y-1"> */}
+                    <div className="px-6 pb-0 -mt-4">
+                      <p className="font-semibold text-lg">{selectedAppointment.patientName}</p>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Mail className="h-4 w-4" />
+                        <a href={`mailto:${selectedAppointment.patientEmail}`} className="hover:text-primary">
+                          {selectedAppointment.patientEmail}
+                        </a>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Phone className="h-4 w-4" />
+                        <a href={`tel:${selectedAppointment.patientPhone}`} className="hover:text-primary">
+                          {selectedAppointment.patientPhone}
+                        </a>
+                      </div>
+                    {/* </CardContent> */}
+                    </div>
+                  </Card>
+
+                  {/* Ubicacion y Servicio */}
+                  <Card className="h-20">
+                    {/* <CardHeader className="pb-0"> */}
+                    <div className="px-6 pb-0 -mt-4">
+                      <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                        <Stethoscope className="h-4 w-4" />
+                        Servicio y Ubicacion
+                      </CardTitle>
+                    {/* </CardContent> */}
+                    </div>
+                    {/* <CardContent className="pt-0 space-y-0"> */}
+                    <div className="px-6 pb-0 -mt-4">
+                      {selectedAppointment.service && (
+                        <div className="flex items-center gap-2">
+                          <Badge variant="secondary">{selectedAppointment.service}</Badge>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-2 text-sm">
+                        <MapPin className="h-4 w-4 text-muted-foreground" />
+                        <span>{getLocationName(selectedAppointment.locationId)}</span>
+                      </div>
+                    {/* </CardContent> */}
+                    </div>
+                  </Card>
+
+                  {/* Notas */}
+                  {selectedAppointment.notes && (
+                    <Card >
+                      {/* <CardHeader className="pb-0"> */}
+                      <div className="px-6 pb-0 -mt-4">
+                          <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                            <FileText className="h-4 w-4" />
+                            Notas
+                          </CardTitle>
+                      {/* </CardContent> */}
+                      </div>
+                        {/* <CardContent className="pt-0"> */}
+                        <div className="px-6 pb-0 -mt-4">
+                          <p className="text-sm">{selectedAppointment.notes}</p>
+                      {/* </CardContent> */}
+                      </div>
+                    </Card>
+                  )}
+                </div>
               )}
-            </div>
-          )}
         </DialogContent>
       </Dialog>
     </div>
