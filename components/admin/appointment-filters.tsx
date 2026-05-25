@@ -28,7 +28,7 @@ interface AppointmentFiltersProps {
 export function AppointmentFilters({ filters, onFiltersChange }: AppointmentFiltersProps) {
   return (
     <div className="flex flex-col sm:flex-row gap-4 mb-6">
-      <div className="flex-1 max-w-xs">
+      {/* <div className="flex-1 max-w-xs">
         <Label htmlFor="status-filter" className="mb-2 block text-sm">
           Estado
         </Label>
@@ -49,7 +49,7 @@ export function AppointmentFilters({ filters, onFiltersChange }: AppointmentFilt
             <SelectItem value="cancelled" className={"cursor-pointer"}>Cancelados</SelectItem>
           </SelectContent>
         </Select>
-      </div>
+      </div> */}
 
       {/* <div className="flex-1 max-w-xs">
         <Label htmlFor="date-filter" className="mb-2 block text-sm">
