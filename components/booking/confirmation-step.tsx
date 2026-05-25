@@ -4,7 +4,9 @@ import { CheckCircle, Calendar, Clock, MapPin, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import type { Appointment } from "@/lib/types"
-import { professionals, locations } from "@/lib/types"
+// import { professionals, locations } from "@/lib/types"
+import { locations } from "@/lib/types"
+import { useProfessionalContext } from "@/context/professionalsContext"
 
 interface ConfirmationStepProps {
   appointment: Appointment
@@ -12,6 +14,7 @@ interface ConfirmationStepProps {
 }
 
 export function ConfirmationStep({ appointment, onNewBooking }: ConfirmationStepProps) {
+  const { professionals, loading: loadingPros } = useProfessionalContext()
   const professional = professionals.find(p => p.id === appointment.professionalId)
   const location = locations.find(l => l.id === appointment.locationId)
 
