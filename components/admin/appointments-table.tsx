@@ -23,11 +23,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { AppointmentDetailDialog } from "@/components/admin/appointment-detail-dialog"
 
 interface AppointmentsTableProps {
   appointments: Appointment[]
   onStatusChange: (id: string, status: "confirmed" | "cancelled" | "deleted") => void
   onDelete: (id: string) => void
+  onAppointmentsUpdate?: (updatedAppointments: Appointment[]) => void
 }
 
 const statusConfig = {
@@ -37,7 +39,7 @@ const statusConfig = {
   deleted: { label: "Eliminado", variant: "secondary" as const, className: "bg-red-100 text-red-800" },
 }
 
-export function AppointmentsTable({ appointments, onStatusChange, onDelete }: AppointmentsTableProps) {
+export function AppointmentsTable({ appointments, onStatusChange, onDelete, onAppointmentsUpdate }: AppointmentsTableProps) {
   const { professionals, loading: loadingPros } = useProfessionalContext()
   
   // 1. Estados independientes para cada filtro de columna
@@ -45,7 +47,8 @@ export function AppointmentsTable({ appointments, onStatusChange, onDelete }: Ap
   const [professionalFilter, setProfessionalFilter] = useState("all")
   const [locationFilter, setLocationFilter] = useState("all")
   const [statusFilter, setStatusFilter] = useState("all")
-  
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
+
   const formatDate = (dateStr: string) => {
     const [year, month, day] = dateStr.split('-')
     return `${day}/${month}/${year}`
@@ -71,22 +74,23 @@ export function AppointmentsTable({ appointments, onStatusChange, onDelete }: Ap
     }
 
     // Filtro por Profesional
-    if (professionalFilter !== "all" && apt.professionalId !== professionalFilter) {
-      return false
-    }
-
+    if (professionalFilter !== "all" && apt.professionalId !== professionalFilter) return false
     // Filtro por Sucursal
-    if (locationFilter !== "all" && apt.locationId !== locationFilter) {
-      return false
-    }
-
+    if (locationFilter !== "all" && apt.locationId !== locationFilter) return false
     // Filtro por Estado
-    if (statusFilter !== "all" && apt.status !== statusFilter) {
-      return false
-    }
+    if (statusFilter !== "all" && apt.status !== statusFilter) return false
 
     return true
   })
+
+  // Función para sincronizar los cambios de estado que se hagan DENTRO del Dialog con la lista de la tabla
+  const handleLocalDialogUpdate = (updatedApt: Appointment) => {
+    setSelectedAppointment(updatedApt)
+    if (onAppointmentsUpdate) {
+      const updatedList = appointments.map(apt => apt.id === updatedApt.id ? updatedApt : apt)
+      onAppointmentsUpdate(updatedList)
+    }
+  }
 
   return (
     <div className="overflow-x-auto w-full rounded-lg border border-border bg-background min-h-[calc(90vh)] flex flex-col justify-between">
@@ -214,7 +218,11 @@ export function AppointmentsTable({ appointments, onStatusChange, onDelete }: Ap
             <tbody className="divide-y divide-border">
               {/* 3. Mapeamos el array ya filtrado por las columnas */}
               {filteredAppointments.map((appointment) => (
-                <tr key={appointment.id} className="border-b border-border odd:bg-white even:bg-blue-50  odd:hover:bg-black/[0.1] even:hover:bg-blue-200 transition-colors">
+                <tr 
+                  key={appointment.id} 
+                  onClick={() => setSelectedAppointment(appointment)}
+                  className="border-b border-border odd:bg-white even:bg-blue-50  odd:hover:bg-black/[0.1] even:hover:bg-blue-200 transition-colors"
+                >
                   <td className="p-4 text-center">
                     <div className="font-medium text-foreground">{appointment.patientName}</div>
                     <div className="text-sm text-muted-foreground md:hidden">
@@ -243,7 +251,7 @@ export function AppointmentsTable({ appointments, onStatusChange, onDelete }: Ap
                       {statusConfig[appointment.status].label}
                     </Badge>
                   </td>
-                  <td className="p-4 text-center">
+                  <td className="p-4 text-center" onClick={(e) => e.stopPropagation()}>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="sm" className="h-8 w-8 p-0  cursor-pointer">
@@ -296,6 +304,15 @@ export function AppointmentsTable({ appointments, onStatusChange, onDelete }: Ap
           </div>
         )}
       </div>
+
+      <AppointmentDetailDialog
+        appointment={selectedAppointment}
+        isOpen={!!selectedAppointment}
+        onClose={() => setSelectedAppointment(null)}
+        onStatusChange={onStatusChange as any}
+        onDelete={onDelete}
+        onUpdateLocalState={handleLocalDialogUpdate}
+      />
     </div>
   )
 }
