@@ -8,7 +8,7 @@ export function useAppointments(initialAppointments: Appointment[] = []) {
 
   const handleStatusChange = async (
     id: string,
-    status: "confirmed" | "cancelled" | "deleted"
+    status: "confirmed" | "cancelled" | "deleted" | "pending"
   ) => {
     try {
       const response = await fetch(`/api/appointments/${id}`, {
