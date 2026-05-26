@@ -26,6 +26,7 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
   const [slots, setSlots] = useState<TimeSlot[]>([])
   const [loading, setLoading] = useState(false)
   const [holidays, setHolidays] = useState<string[]>([])
+  const [fullyBookedDates, setFullyBookedDates] = useState<string[]>([])
 
   const supabase = createClient()
 
@@ -91,6 +92,23 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
     fetchHolidays()
   }, [])
 
+  useEffect(() => {
+    const year = currentMonth.getFullYear()
+    const month = String(currentMonth.getMonth() + 1).padStart(2, '0')
+    
+    // Llamamos a la API pasándole solo el año y mes para que sepa que queremos el reporte mensual
+    fetch(`/api/appointments?month=${year}-${month}&professionalId=${professionalId}&locationId=${locationId}`)
+      .then(res => res.json())
+      .then(data => {
+        // Supongamos que tu API te devuelve un array de strings en data.fullyBookedDates
+        setFullyBookedDates(data.fullyBookedDates || [])
+      })
+      .catch(err => {
+        console.error("Error al cargar disponibilidad mensual:", err)
+        setFullyBookedDates([])
+      })
+  }, [currentMonth, professionalId, locationId])
+
   const getDaysInMonth = (year: number, month: number) => {
     return new Date(year, month + 1, 0).getDate()
   }
@@ -120,7 +138,8 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
       checkDate < today || 
       checkDate > maxDateUntil || 
       checkDate.getDay() === 0 || checkDate.getDay() === 6  || //disabled dom and sab
-      holidays.includes(dateString)
+      holidays.includes(dateString) ||
+      fullyBookedDates.includes(dateString) // <--- NUEVA CONDICIÓN MÁGICA
     )
   }
 
@@ -147,11 +166,14 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
       const isDisabled = isDateDisabled(day)
       const isSelected = date === dateString
 
+      // const isFullyBooked = fullyBookedDates.includes(dateString)
+
       days.push(
         <button
           key={day}
           type="button"
           disabled={isDisabled}
+          // title={isFullyBooked ? "Día completo (sin turnos)" : undefined}
           onClick={() => {
             setDate(dateString)
             setTime("")
@@ -159,6 +181,8 @@ export function DateTimeStep({ professionalId, locationId, selectedDate, selecte
           className={cn(
             "h-10 w-full rounded-md text-sm transition-colors cursor-pointer",
             isDisabled && "text-muted-foreground/50 cursor-not-allowed",
+            // 👀 ESTILOS PARA EL DÍA COMPLETAMENTE LLENO (si no está deshabilitado por otra razón)
+            // isFullyBooked && !isSelected && " text-destructive",
             !isDisabled && "hover:bg-primary/10",
             isSelected && !isDisabled && "bg-primary text-primary-foreground hover:bg-primary"
           )}
