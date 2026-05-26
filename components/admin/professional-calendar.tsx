@@ -19,6 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useAppointments } from "@/hooks/use-appointments"
+import { AppointmentDetailDialog } from "@/components/admin/appointment-detail-dialog" // <-- Importar acá
 
 interface ProfessionalCalendarProps {
   professional: Professional
@@ -289,11 +290,9 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
       </Card>
 
       {/* Dialog con detalles del turno */}
-      <Dialog open={!!selectedAppointment} onOpenChange={() => setSelectedAppointment(null)}>
+      {/* <Dialog open={!!selectedAppointment} onOpenChange={() => setSelectedAppointment(null)}>
         <DialogContent className="sm:max-w-md p-3">
-          {/* 2. Cabecera manual: Reemplazamos DialogHeader por un div común para evitar los paddings fantasmas del framework */}
           <DialogHeader className="p-0 space-y-0 ">
-            {/* Fila del título principal. pr-8 le da espacio a la derecha para que NUNCA pise la X de cerrar */}
             <DialogTitle className="text-lg font-semibold tracking-tight text-foreground flex items-center justify-between w-full pr-8">
               <span>
                 Detalle del Turno
@@ -309,10 +308,6 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
                 >
                   {getStatusText(selectedAppointment?.status || "")}
                 </Badge>
-                    {/* <Button variant="ghost" size="sm" className="h-8 w-8 p-0 cursor-pointer">
-                      <MoreHorizontal className="h-4 w-4" />
-                      <span className="sr-only">Abrir menu</span>
-                    </Button> */}
                   </DropdownMenuTrigger>
 
                   <DropdownMenuContent align="start" className="p-0.5">
@@ -367,17 +362,13 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
               
               {selectedAppointment && (
                 <div className="space-y-1">
-                  {/* Fecha y Hora */}
                   <Card className="h-25">
-                    {/* <CardHeader className="pb-0"> */}
                     <div className="px-6 pb-0 -mt-4">
                       <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                         <Clock className="h-4 w-4" />
                         Fecha y Hora
                       </CardTitle>
-                    {/* </CardHeader> */}
                     </div>
-                    {/* <CardContent className="pt-0"> */}
                     <div className="px-6 pb-0 -mt-4">
                       <p className="font-semibold">
                         {new Date(selectedAppointment.date + "T12:00:00").toLocaleDateString("es-AR", {
@@ -388,21 +379,16 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
                         })}
                       </p>
                       <p className="text-lg text-primary font-bold">{selectedAppointment.time} hs</p>
-                    {/* </CardContent> */}
                     </div>
                   </Card>
 
-                  {/* Informacion del Paciente */}
                   <Card className="h-30">
-                    {/* <CardHeader className="pb-0"> */}
                     <div className="px-6 pb-0 -mt-4">
                       <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                         <User className="h-4 w-4" />
                         Paciente
                       </CardTitle>
-                    {/* </CardContent> */}
                     </div>
-                    {/* <CardContent className="pt-0 space-y-1"> */}
                     <div className="px-6 pb-0 -mt-4">
                       <p className="font-semibold text-lg">{selectedAppointment.patientName}</p>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -417,21 +403,16 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
                           {selectedAppointment.patientPhone}
                         </a>
                       </div>
-                    {/* </CardContent> */}
                     </div>
                   </Card>
 
-                  {/* Ubicacion y Servicio */}
                   <Card className="h-20">
-                    {/* <CardHeader className="pb-0"> */}
                     <div className="px-6 pb-0 -mt-4">
                       <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                         <Stethoscope className="h-4 w-4" />
                         Servicio y Ubicacion
                       </CardTitle>
-                    {/* </CardContent> */}
                     </div>
-                    {/* <CardContent className="pt-0 space-y-0"> */}
                     <div className="px-6 pb-0 -mt-4">
                       {selectedAppointment.service && (
                         <div className="flex items-center gap-2">
@@ -442,32 +423,34 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
                         <MapPin className="h-4 w-4 text-muted-foreground" />
                         <span>{getLocationName(selectedAppointment.locationId)}</span>
                       </div>
-                    {/* </CardContent> */}
                     </div>
                   </Card>
 
-                  {/* Notas */}
                   {selectedAppointment.notes && (
                     <Card >
-                      {/* <CardHeader className="pb-0"> */}
                       <div className="px-6 pb-0 -mt-4">
                           <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                             <FileText className="h-4 w-4" />
                             Notas
                           </CardTitle>
-                      {/* </CardContent> */}
                       </div>
-                        {/* <CardContent className="pt-0"> */}
                         <div className="px-6 pb-0 -mt-4">
                           <p className="text-sm">{selectedAppointment.notes}</p>
-                      {/* </CardContent> */}
                       </div>
                     </Card>
                   )}
                 </div>
               )}
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
+      <AppointmentDetailDialog
+        appointment={selectedAppointment}
+        isOpen={!!selectedAppointment}
+        onClose={() => setSelectedAppointment(null)}
+        onStatusChange={handleStatusChange}
+        onDelete={handleDelete}
+        onUpdateLocalState={(updatedApt) => setSelectedAppointment(updatedApt)}
+      />
     </div>
   )
 }
