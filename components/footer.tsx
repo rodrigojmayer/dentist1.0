@@ -3,7 +3,18 @@ import Image from "next/image"
 import { Sun, Phone, MapPin, Instagram, Facebook } from "lucide-react"
 import Link from "next/link"
 
+const NAV_LINKS = [
+  // { href: "/#equipo", label: "Equipo" },
+  // { href: "/#nosotros", label: "Nosotros" },
+  // { href: "/#contacto", label: "Contacto" },
+  // { href: "/reservar", label: "Sacar turno" },
+  { href: "/admin", label: "Admin" },
+]
+
 export function Footer() {
+
+  const linkClassName = "block text-background/70 hover:text-background transition-colors"
+
   return (
     <footer className="bg-foreground text-background py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -58,31 +69,24 @@ export function Footer() {
 
           <div>
             <h3 className="font-semibold mb-4">Enlaces</h3>
+
             <div className="space-y-3">
-              <Link href="/#equipo" className="block text-background/70 hover:text-background transition-colors">
-                Equipo
-              </Link>
-              <Link href="/#nosotros" className="block text-background/70 hover:text-background transition-colors">
-                Nosotros
-              </Link>
-              <Link href="/#contacto" className="block text-background/70 hover:text-background transition-colors">
-                Contacto
-              </Link>
-              <Link href="/reservar" className="block text-background/70 hover:text-background transition-colors">
-                Sacar turno
-              </Link>
+              {NAV_LINKS.map((link) => (
+                <Link 
+                  key={link.href} 
+                  href={link.href} 
+                  className={linkClassName}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
           </div>
         </div>
 
         <div className="border-t border-background/10 mt-12 pt-8 text-center text-background/50 text-sm">
           <p>&copy; {new Date().getFullYear()} Instituto Odontológico Austral. Todos los derechos reservados.</p>
-          <Link
-            href="/admin"
-            className="text-xl font-bold tracking-tight cursor-pointer"
-          >
-            Boton para admin
-          </Link>
+          
         </div>
       </div>
     </footer>
