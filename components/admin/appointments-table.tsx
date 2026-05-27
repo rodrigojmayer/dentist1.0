@@ -252,14 +252,14 @@ export function AppointmentsTable({ appointments, onStatusChange, onDelete, onAp
                     </Badge>
                   </td>
                   <td className="p-4 text-center" onClick={(e) => e.stopPropagation()}>
-                    <DropdownMenu>
+                    <DropdownMenu modal={false}>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="sm" className="h-8 w-8 p-0  cursor-pointer">
                           <MoreHorizontal className="h-4 w-4" />
                           <span className="sr-only">Abrir menu</span>
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
+                      <DropdownMenuContent align="end" className="z-1">
                         {appointment.status !== "confirmed" && (
                           <DropdownMenuItem onClick={() => onStatusChange(appointment.id, "confirmed")}>
                             <Check className="h-4 w-4 mr-2 text-green-600" />
