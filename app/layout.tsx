@@ -47,7 +47,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`font-sans antialiased`}>
+      <body className={`font-sans antialiased  overflow-y-scroll m-0 p-0`}>
         <ProfessionalProvider>
           {children}
           <Analytics />
