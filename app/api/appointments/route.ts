@@ -84,10 +84,11 @@ export async function GET(request: NextRequest) {
   // Build query with optional filters
   let query = supabase
     .from("appointments")
-    .select("*")
+    .select("*", { count: "exact", head: false })
     .neq("status", "deleted") // <--- ESTA LÍNEA filtra los borrados
-    .order("date", { ascending: true })
-    .order("time", { ascending: true })
+    // .order("date", { ascending: true })
+    // .order("time", { ascending: true })
+    // .range(0, 4999) // 🔥 Con esto le ordenás a la API que rompa el techo de los 1000
 
   // Filter by professional if provided
   if (professionalId) {
@@ -103,14 +104,45 @@ export async function GET(request: NextRequest) {
   }
 
   // Get appointments
-  const { data: appointments, error } = await query
+  // const { data: appointments, error } = await query
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  // const { data: appointments, error } = await query
+  //   .order("date", { ascending: true })
+  //   .order("time", { ascending: true })
+  //   .range(0, 4999) // <--- Colocado acá fuerza el límite real a 5000 antes del await
+
+  query = query.order("date", { ascending: true }).order("time", { ascending: true })
+  let allAppointments: any[] = []
+  let from = 0
+  let to = 999
+  let hasMore = true
+
+  while (hasMore) {
+    // Pedimos de a 1000 registros por vuelta
+    const { data, error: chunkError } = await query.range(from, to)
+
+    if (chunkError) {
+      return NextResponse.json({ error: chunkError.message }, { status: 500 })
+    }
+
+    if (data && data.length > 0) {
+      allAppointments = [...allAppointments, ...data]
+      
+      // Si nos devolvió menos de 1000, significa que ya vaciamos la tabla
+      if (data.length < 1000) {
+        hasMore = false
+      } else {
+        // Si devolvió 1000 exactos, preparamos el siguiente bloque
+        from += 1000
+        to += 1000
+      }
+    } else {
+      hasMore = false
+    }
   }
 
   // Transform snake_case to camelCase for frontend compatibility
-  const transformedAppointments = appointments?.map(a => ({
+  const transformedAppointments = allAppointments?.map(a => ({
     id: a.id,
     patientName: a.patient_name,
     patientEmail: a.patient_email,
