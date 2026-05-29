@@ -27,6 +27,8 @@ import { AppointmentDetailDialog } from "@/components/admin/appointment-detail-d
 
 interface AppointmentsTableProps {
   appointments: Appointment[]
+  statusFilter: string
+  setStatusFilter: (status: string) => void
   onStatusChange: (id: string, status: "confirmed" | "cancelled" | "deleted") => void
   onDelete: (id: string) => void
   onAppointmentsUpdate?: (updatedAppointments: Appointment[]) => void
@@ -39,14 +41,20 @@ const statusConfig = {
   deleted: { label: "Eliminado", variant: "secondary" as const, className: "bg-red-100 text-red-800" },
 }
 
-export function AppointmentsTable({ appointments, onStatusChange, onDelete, onAppointmentsUpdate }: AppointmentsTableProps) {
+export function AppointmentsTable({ 
+  appointments, 
+  statusFilter, 
+  setStatusFilter,
+  onStatusChange, 
+  onDelete, 
+  onAppointmentsUpdate }: AppointmentsTableProps) {
   const { professionals, loading: loadingPros } = useProfessionalContext()
   
   // 1. Estados independientes para cada filtro de columna
   const [patientFilter, setPatientFilter] = useState("")
   const [professionalFilter, setProfessionalFilter] = useState("all")
   const [locationFilter, setLocationFilter] = useState("all")
-  const [statusFilter, setStatusFilter] = useState("all")
+  // const [statusFilter, setStatusFilter] = useState("all")
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
 
   const formatDate = (dateStr: string) => {
@@ -169,7 +177,7 @@ export function AppointmentsTable({ appointments, onStatusChange, onDelete, onAp
               </td>
               {/* Filtro Estado */}
               <td className="px-0 text-center">
-                <Select 
+                {/* <Select 
                   value={statusFilter} 
                   onValueChange={(value) => setStatusFilter(value)}
                 >
@@ -190,7 +198,7 @@ export function AppointmentsTable({ appointments, onStatusChange, onDelete, onAp
                       Cancelados
                     </SelectItem>
                   </SelectContent>
-                </Select>
+                </Select> */}
               </td>
               {/* Botón de limpiar filtros rápidos */}
               <td className="px-2 text-center pr-4">
@@ -215,7 +223,7 @@ export function AppointmentsTable({ appointments, onStatusChange, onDelete, onAp
 
           {/* Solo renderizamos el tbody si hay elementos */}
           {filteredAppointments.length > 0 && (
-            <tbody className="divide-y divide-border">
+            <tbody className="divide-y divide-border cursor-pointer">
               {/* 3. Mapeamos el array ya filtrado por las columnas */}
               {filteredAppointments.map((appointment) => (
                 <tr 
