@@ -64,7 +64,7 @@ export function AppointmentDetailDialog({
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()} modal={true}>
         {/* <DialogContent className="sm:max-w-md p-5 gap-0"> */}
         <DialogContent className="sm:max-w-md p-3">
             {/* <DialogHeader className="p-0 space-y-0 mb-3"> */}
