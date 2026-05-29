@@ -12,6 +12,8 @@ import { AppointmentFilters } from "./appointment-filters"
 import type { Appointment } from "@/lib/types"
 import { useToast } from "@/hooks/use-toast"
 import { useAppointments } from "@/hooks/use-appointments"
+import { Header } from "@/components/header" // <--- Importás tu Header real acá (ajustá la ruta si hace falta)
+import { cn } from "@/lib/utils"
 
 
 export function AdminDashboard() {
@@ -23,6 +25,15 @@ export function AdminDashboard() {
   const todayStr = new Date().toLocaleDateString("sv-SE") // Retorna "YYYY-MM-DD" basado en tu zona local
   const [loading, setLoading] = useState(true)
   // MODIFICADO: Ahora 'date' es un objeto con rangos 'from' y 'to' (Ambos inician con HOY)
+  const [statusFilter, setStatusFilter] = useState("all")
+  
+  const {
+    appointments,
+    setAppointments,
+    handleStatusChange,
+    handleDelete
+  } = useAppointments()
+
   const [filters, setFilters] = useState({
     status: "all",
     // date: today.toISOString().split('T')[0],
@@ -31,13 +42,6 @@ export function AdminDashboard() {
       to: todayStr,
     }
   })
-
-  const {
-    appointments,
-    setAppointments,
-    handleStatusChange,
-    handleDelete
-  } = useAppointments()
 
   const fetchAppointments = useCallback(async () => {
     setLoading(true)
@@ -50,7 +54,7 @@ export function AdminDashboard() {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [setAppointments])
 
   useEffect(() => {
     fetchAppointments()
@@ -128,22 +132,21 @@ export function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-foreground text-background">
+    // <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-20 md:pt-24">
+      {/* <header className="bg-foreground text-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2">
-              {/* <Sun className="h-8 w-8 text-accent" /> */}
               <img src="/Gemini_Generated_Image_qswhjbqswhjbqswh-removebg-preview8.png" className="h-15 w-auto object-contain block pb-2"/>
                <span className="font-serif text-xl font-semibold">Instituto Odontológico Austral</span>
             </Link>
             <span className="text-background/70 text-sm">Panel de Administracion</span>
           </div>
         </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      </header> */}
+      <Header isAdmin={true} />
+      {/* <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold text-foreground">Gestion de Turnos</h1>
@@ -153,10 +156,92 @@ export function AdminDashboard() {
             <RefreshCw className="h-4 w-4" />
             Actualizar
           </Button>
+        </div> */}
+
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+      {/* Título y Sección Superior */}
+      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">Gestion de Turnos</h1>
+          <p className="text-muted-foreground text-sm">Administra las citas de los pacientes</p>
         </div>
 
+        {/* Bloque Derecho: Calendario Semanal por Profesional */}
+        
+        
+      </div>
+
+      {/* BARRA INTERACTIVA: Filtros + Contadores Dinámicos */}
+      <div className="flex flex-col md:flex-row md:items-center gap-4 pb-0 mb-0">
+        
+        {/* Componente de Filtros (Fechas desde/hasta se renderizan acá adentro) */}
+        <div className="w-full md:w-115 shrink-0">
+          <AppointmentFilters filters={filters} onFiltersChange={setFilters} />
+        </div>
+
+  
+        {/* Contadores Compactos Dinámicos (Leen de filteredAppointments) */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full flex-1">
+          {(() => {
+            // 1. Definimos la configuración de cada tarjeta
+            const cardsConfig = [
+              {
+                id: "all",
+                label: "Total turnos",
+                value: filteredAppointments.length,
+                icon: <Calendar className="h-3.5 w-3.5 text-primary shrink-0" />,
+              },
+              {
+                id: "pending",
+                label: "Pendientes",
+                value: filteredAppointments.filter(a => a.status === "pending").length,
+                icon: <Clock className="h-3.5 w-3.5 text-amber-500 shrink-0" />,
+              },
+              {
+                id: "confirmed",
+                label: "Confirmados",
+                value: filteredAppointments.filter(a => a.status === "confirmed").length,
+                icon: <Users className="h-3.5 w-3.5 text-green-500 shrink-0" />,
+              },
+              {
+                id: "cancelled",
+                label: "Cancelados",
+                value: filteredAppointments.filter(a => a.status === "cancelled").length,
+                icon: <span className="text-red-500 font-bold text-sm leading-none px-0.5 shrink-0">✕</span>,
+              },
+            ]
+
+            // 2. Las renderizamos de forma limpia con un solo .map()
+            return cardsConfig.map((card) => (
+              <Card 
+                key={card.id} 
+                onClick={() => setStatusFilter(card.id)}
+                className={cn(
+                  "shadow-sm  py-2 mb-4 border border-border/80 min-w-[110px] cursor-pointer hover:border-primary ",
+                  statusFilter === card.id
+                    ? "border-primary bg-primary/5 ring-1 ring-primary/20 shadow-md scale-[1.02]" // Seleccionada
+                    : "border-border/80 hover:border-primary text-muted-foreground hover:text-foreground" // No seleccionada
+                )}
+              >
+                <CardContent className="px-2 py-0 flex flex-col items-center justify-center">
+                  <p className="text-[14px] font-medium text-muted-foreground text-center tracking-tight leading-tight">
+                    {card.label}
+                  </p>
+                  <div className="flex items-center justify-center gap-1.5 mt-0">
+                    {card.icon}
+                    <span className="text-base font-bold tracking-tight text-foreground">
+                      {card.value}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          })()}
+        </div>
+      </div>
+
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">Total turnos</CardTitle>
@@ -206,7 +291,6 @@ export function AdminDashboard() {
           </Card>
         </div>
 
-        {/* Profesionales */}
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -241,13 +325,97 @@ export function AdminDashboard() {
               </div>
             )}
           </CardContent>
-        </Card>
+        </Card> */}
+
+        {/* Sección de Métricas y Calendario Rápido */}
+        {/*<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 items-start">
+          
+           <div className="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <Card className="shadow-sm border border-border/60">
+              <CardContent className="px-3 flex flex-col justify-between min-h-[15px]">
+                <p className="text-xs font-medium text-muted-foreground tracking-tight">Total turnos</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <Calendar className="h-4 w-4 text-primary shrink-0" />
+                  <span className="text-xl font-bold tracking-tight text-foreground">{stats.total}</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-sm border border-border/60">
+              <CardContent className="p-3 flex flex-col justify-between min-h-[85px]">
+                <p className="text-xs font-medium text-muted-foreground tracking-tight">Pendientes</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <Clock className="h-4 w-4 text-amber-500 shrink-0" />
+                  <span className="text-xl font-bold tracking-tight text-foreground">{stats.pending}</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-sm border border-border/60">
+              <CardContent className="p-3 flex flex-col justify-between min-h-[85px]">
+                <p className="text-xs font-medium text-muted-foreground tracking-tight">Confirmados</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <Users className="h-4 w-4 text-green-500 shrink-0" />
+                  <span className="text-xl font-bold tracking-tight text-foreground">{stats.confirmed}</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-sm border border-border/60">
+              <CardContent className="p-3 flex flex-col justify-between min-h-[85px]">
+                <p className="text-xs font-medium text-muted-foreground tracking-tight">Hoy</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <Calendar className="h-4 w-4 text-primary shrink-0" />
+                  <span className="text-xl font-bold tracking-tight text-foreground">{stats.today}</span>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="lg:col-span-1">
+            <Card className="shadow-sm border border-border/60 bg-card">
+              <CardContent className="p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <UserCircle className="h-4 w-4 text-primary shrink-0" />
+                  <p className="text-xs font-semibold text-foreground tracking-tight">
+                    Calendario semanal por Profesional
+                  </p>
+                </div>
+
+                {loadingPros ? (
+                  <div className="text-xs text-muted-foreground py-1">Cargando...</div>
+                ) : !Array.isArray(professionals) || professionals.length === 0 ? (
+                  <div className="text-xs text-muted-foreground py-1">Sin datos.</div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/admin/${professionals[0].id}`}
+                      className="flex-1 flex items-center justify-between p-2 rounded-md border border-border bg-background hover:border-primary hover:bg-primary/5 transition-colors text-left"
+                    >
+                      <div className="truncate">
+                        <p className="text-xs font-medium text-foreground truncate">{professionals[0].name}</p>
+                        <p className="text-[10px] text-muted-foreground truncate">{professionals[0].specialties[0]}</p>
+                      </div>
+                      <ChevronRight className="h-3 w-3 text-muted-foreground shrink-0 ml-1" />
+                    </Link>
+                    
+                    <Link href={`/admin/${professionals[0].id}`}>
+                      <Button size="sm" className="h-9 text-xs px-3 font-medium cursor-pointer">
+                        Ir
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </div> */}
 
         {/* Filters */}
-        <AppointmentFilters filters={filters} onFiltersChange={setFilters} />
+        {/* <AppointmentFilters filters={filters} onFiltersChange={setFilters} /> */}
 
         {/* Table */}
-        <Card className="border-none shadow-none bg-transparent">
+        <Card className="border-none shadow-none bg-transparent p-0">
           <CardContent className="p-0">
             {loading ? (
               <div className="p-8 text-center text-muted-foreground">
@@ -260,6 +428,8 @@ export function AdminDashboard() {
             ) : (
               <AppointmentsTable 
                 appointments={filteredAppointments}
+                statusFilter={statusFilter}
+                setStatusFilter={setStatusFilter}
                 onStatusChange={handleStatusChange}
                 onDelete={handleDelete}
               />
