@@ -217,11 +217,12 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
                     </th>
                     {weekDays.map((day, index) => {
                       const isSunday = day.getDay() === 0;
+                      const isSaturday = day.getDay() === 6;
                       return (
                         <th
                           key={index}
                           className={`p-2 border-b text-center  ${
-                            isSunday ? "w-[60px]" : "w-auto"
+                            isSunday || isSaturday ? "w-[60px]" : "w-auto"
                           }  ${isToday(day) ? "bg-primary/10" : "bg-muted/30"
                           }`}
                         >
@@ -252,13 +253,14 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
                         // console.log("weekDays.map dayIndex: ", dayIndex)
                         // console.log("weekDays.map dayAppointments: ", dayAppointments)
                         const isSunday = day.getDay() === 0
+                        const isSaturday = day.getDay() === 6
                         
                         return (
                           <td
                             key={dayIndex}
                             className={`p-1 border-b border-r h-12 align-top ${
                               isToday(day) ? "bg-primary/5" : ""
-                            } ${isSunday ? "bg-muted/40 w-[60px]" : ""}`}
+                            } ${isSunday || isSaturday ? "bg-muted/40 w-[60px]" : ""}`}
                           >
                             {dayAppointments.map((apt) => (
                               <button
