@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/server"
 import type { Professional } from "@/lib/types"
+import { Header } from "@/components/header"
 
 // 💡 ESTA LÍNEA ES LA CLAVE: Le avisa a Next.js que no intente pre-renderizar esto de forma estática
 export const dynamic = "force-dynamic"
@@ -28,28 +29,33 @@ export default async function ProfessionalPage({
   }
 
   return (
-    <main className="min-h-screen bg-background">
-      <div className="bg-primary text-primary-foreground py-6">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center gap-4">
-            <Link href="/admin">
-              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10 cursor-pointer">
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-            </Link>
-            <div>
-              <h1 className="text-2xl font-serif font-semibold">{professional.name}</h1>
-              <p className="text-primary-foreground/80 text-sm">
-                {professional.specialties ? professional.specialties.slice(0, 3).join(" | ") : "General"}
-              </p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-background pt-20 md:pt-24">
+      <Header isAdmin={true} />
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">
+            Agenda semanal: &nbsp;&nbsp;
+            <span className="font-serif font-semibold  capitalize">
+              {professional.name}
+            </span>
+          </h1>
+          <p className="text-muted-foreground text-sm">
+            {professional.specialties ? professional.specialties.slice(0, 3).join(" | ") : "General"}
+
+          </p>
         </div>
+
+        {/* Bloque Derecho: Calendario Semanal por Profesional */}
+        
+        
       </div>
       
-      <div className="container mx-auto px-4 py-8">
-        <ProfessionalCalendar professional={professional as Professional} />
-      </div>
-    </main>
+        
+        <div className="container mx-auto p-0">
+          <ProfessionalCalendar professional={professional as Professional} />
+        </div>
+      </main>
+    </div>
   )
 }
