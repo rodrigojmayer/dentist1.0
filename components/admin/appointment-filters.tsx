@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button" 
 import { CalendarDays } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useToday } from "@/hooks/use-today"
 
 // MODIFICADO: Ajustamos la interfaz para reflejar la nueva estructura de rango de fechas
 interface Filters {
@@ -29,16 +30,21 @@ interface AppointmentFiltersProps {
 }
 
 export function AppointmentFilters({ filters, onFiltersChange }: AppointmentFiltersProps) {
-  
-  // 💡 1. Calculamos la fecha de hoy en formato local YYYY-MM-DD
-  const hoy = new Date()
-  const anio = hoy.getFullYear()
-  const mes = String(hoy.getMonth() + 1).padStart(2, '0')
-  const dia = String(hoy.getDate()).padStart(2, '0')
-  const fechaHoyString = `${anio}-${mes}-${dia}` // Ejemplo: "2026-05-29"
+  // 💡 Consumimos el hook inyectando el estado de los filtros actuales
+  const { fechaHoyString, hoySelected } = useToday({
+    from: filters.date.from,
+    to: filters.date.to
+  })
 
-  // 💡 2. Determinamos si está seleccionado evaluando el estado actual de los filtros
-  const hoySelected = filters.date.from === fechaHoyString && filters.date.to === fechaHoyString
+  // // 💡 1. Calculamos la fecha de hoy en formato local YYYY-MM-DD
+  // const hoy = new Date()
+  // const anio = hoy.getFullYear()
+  // const mes = String(hoy.getMonth() + 1).padStart(2, '0')
+  // const dia = String(hoy.getDate()).padStart(2, '0')
+  // const fechaHoyString = `${anio}-${mes}-${dia}` // Ejemplo: "2026-05-29"
+
+  // // 💡 2. Determinamos si está seleccionado evaluando el estado actual de los filtros
+  // const hoySelected = filters.date.from === fechaHoyString && filters.date.to === fechaHoyString
 
   const handleSetToday = () => {
     onFiltersChange({
@@ -118,8 +124,7 @@ export function AppointmentFilters({ filters, onFiltersChange }: AppointmentFilt
           })}
         />
       </div>
-      <div className="w-full sm:w-auto flex flex-col justify-end"
-      >
+      <div className="w-full sm:w-auto flex flex-col justify-end">
         <Button
           type="button"
           variant="outline"
@@ -135,7 +140,7 @@ export function AppointmentFilters({ filters, onFiltersChange }: AppointmentFilt
               "h-4 w-4 transition-colors",
               hoySelected ? "text-primary" : "text-muted-foreground"
             )} 
-         />
+          />
           Hoy
         </Button>
       </div>
