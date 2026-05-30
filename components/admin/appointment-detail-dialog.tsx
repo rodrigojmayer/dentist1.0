@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Clock, User, Phone, Mail, MapPin, FileText, Stethoscope, Trash2, X, Check } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 interface AppointmentWithService extends Appointment {
   service?: string
@@ -47,9 +48,9 @@ export function AppointmentDetailDialog({
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "confirmed": return "bg-green-500"
-      case "pending": return "bg-amber-500"
-      case "cancelled": return "bg-red-500"
+      case "confirmed": return "bg-green-100 text-green-800"
+      case "pending": return "bg-amber-100 text-amber-800"
+      case "cancelled": return "bg-red-100 text-red-800"
       default: return "bg-muted"
     }
   }
@@ -62,6 +63,12 @@ export function AppointmentDetailDialog({
       default: return status
     }
   }
+
+  
+//   pending: { label: "Pendiente", variant: "secondary" as const, className: "bg-amber-100 text-amber-800" },
+//   confirmed: { label: "Confirmado", variant: "secondary" as const, className: "bg-green-100 text-green-800" },
+//   cancelled: { label: "Cancelado", variant: "secondary" as const, className: "bg-red-100 text-red-800" },
+//   deleted: { label: "Eliminado", variant: "secondary" as const, className: "bg-red-100 text-red-800" },
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()} modal={true}>
@@ -78,7 +85,7 @@ export function AppointmentDetailDialog({
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                     <Badge
-                        className={`${getStatusColor(appointment.status)} text-card border-3 cursor-pointer hover:scale-105 transition-transform`}
+                        className={`${getStatusColor(appointment.status)} border-3 cursor-pointer hover:scale-105 transition-transform`}
                     >
                         {getStatusText(appointment.status)}
                     </Badge>
@@ -87,7 +94,10 @@ export function AppointmentDetailDialog({
                 <DropdownMenuContent align="start" className="p-0.5">
                     {appointment.status !== "confirmed" && (
                         <DropdownMenuItem
-                            className="cursor-pointer"
+                            className={cn(
+                                "cursor-pointer border border-transparent  transition-colors",
+                                "data-[highlighted]:bg-green-100 data-[highlighted]:text-green-800 data-[highlighted]:border-green-400"
+                            )}
                             onClick={() => {
                                 onStatusChange(appointment.id, "confirmed")
                                 onUpdateLocalState({ ...appointment, status: "confirmed" })
@@ -100,7 +110,10 @@ export function AppointmentDetailDialog({
 
                     {appointment.status !== "cancelled" && (
                         <DropdownMenuItem
-                            className="cursor-pointer"
+                            className={cn(
+                              "cursor-pointer border border-transparent  transition-colors",
+                              "data-[highlighted]:bg-red-100 data-[highlighted]:text-red-800 data-[highlighted]:border-red-400"
+                            )}
                             onClick={() => {
                                 onStatusChange(appointment.id, "cancelled")
                                 onUpdateLocalState({ ...appointment, status: "cancelled" })
@@ -112,7 +125,10 @@ export function AppointmentDetailDialog({
                     )}
 
                     <DropdownMenuItem
-                        className="text-destructive focus:text-destructive cursor-pointer"
+                        className={cn(
+                            "cursor-pointer border border-transparent text-destructive transition-colors",
+                            "data-[highlighted]:bg-destructive/50 data-[highlighted]:text-muted data-[highlighted]:border-destructive/100"
+                        )}
                         onClick={() => {
                         onDelete(appointment.id)
                         onClose()
