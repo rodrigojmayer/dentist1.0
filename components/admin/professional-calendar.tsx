@@ -5,7 +5,7 @@ import { Professional, Appointment, locations } from "@/lib/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ChevronLeft, ChevronRight, Clock, User, Phone, Mail, MapPin, FileText, Stethoscope, MoreHorizontal, Trash2, X, Check } from "lucide-react"
+import { ChevronLeft, ChevronRight, Clock, User, Phone, Mail, MapPin, FileText, Stethoscope, MoreHorizontal, Trash2, X, Check, CalendarDays } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -20,6 +20,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useAppointments } from "@/hooks/use-appointments"
 import { AppointmentDetailDialog } from "@/components/admin/appointment-detail-dialog" // <-- Importar acá
+import { useToday } from "@/hooks/use-today"
+import { cn } from "@/lib/utils"
 
 interface ProfessionalCalendarProps {
   professional: Professional
@@ -44,6 +46,16 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
   // const [appointments, setAppointments] = useState<AppointmentWithService[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedAppointment, setSelectedAppointment] = useState<AppointmentWithService | null>(null)
+
+  // 💡 Consumimos el hook (no pasamos parámetros porque la UI del calendario evalúa "hoySelected" basándose en otra lógica)
+  const { fechaHoyString } = useToday()
+
+  // 💡 Evaluamos si la vista actual del calendario es la semana de hoy
+  const hoySelected = currentDate.toDateString() === new Date().toDateString()
+
+  const handleSetToday = () => {
+    setCurrentDate(new Date()) // Restablece el calendario al día actual
+  }
 
   const getWeekDays = (date: Date) => {
     const week = []
@@ -170,38 +182,69 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
 
   return (
     <div className="space-y-6">
-      {/* Header con navegacion */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon" onClick={previousWeek} className="cursor-pointer">
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="icon" onClick={nextWeek} className="cursor-pointer">
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" onClick={goToToday} className="cursor-pointer">
-                Hoy
-              </Button>
-            </div>
-            <h2 className="text-xl font-semibold capitalize">{formatMonthYear()}</h2>
-            <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-green-500" />
-                <span>Confirmado</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-amber-500" />
-                <span>Pendiente</span>
-              </div>
-            </div>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">              
+          <div className="w-full sm:w-auto flex flex-col justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={previousWeek}
+              className={cn(
+                "w-full sm:w-auto h-10 gap-2 cursor-pointer text-sm font-medium transition-all duration-200 mb-0",
+                "border-border/80 hover:border-primary hover:bg-primary/5 text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
           </div>
-        </CardContent>
-      </Card>
+          <div className="w-full sm:w-auto flex flex-col justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleSetToday}
+              className={cn(
+              "w-full sm:w-auto h-10 gap-2 cursor-pointer text-sm font-medium transition-all duration-200 mb-0",
+              hoySelected
+                ? "border-primary bg-primary/5 ring-1 hover:bg-primary/5 ring-primary/20 text-primary hover:text-primary shadow-md scale-[1.02]" 
+                : "border-border/80 hover:border-primary hover:bg-primary/5 text-muted-foreground hover:text-foreground"
+            )}
+            >
+              <CalendarDays className={cn(
+                  "h-4 w-4 transition-colors",
+                  hoySelected ? "text-primary" : "text-muted-foreground"
+                )} 
+              />
+              Semana actual
+            </Button>
+          </div>
+          <div className="w-full sm:w-auto flex flex-col justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={nextWeek}
+              className={cn(
+              "w-full sm:w-auto h-10 gap-2 cursor-pointer text-sm font-medium transition-all duration-200 mb-0",
+              "border-border/80 hover:border-primary hover:bg-primary/5 text-muted-foreground hover:text-foreground"
+            )}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+        <h2 className="text-xl font-semibold capitalize">{formatMonthYear()}</h2>
+        <div className="flex items-center gap-4 text-sm">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-green-500" />
+            <span>Confirmado</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-amber-500" />
+            <span>Pendiente</span>
+          </div>
+        </div>
+      </div>
 
-      {/* Calendario semanal */}
-      <Card>
+      <Card  className="p-0">
         <CardContent className="p-0">
           {loading ? (
             <div className="flex items-center justify-center h-96">
@@ -210,29 +253,101 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full border-collapse min-w-[800px] table-fixed">
-                <thead>
+                <colgroup>
+                  <col className="w-20" /> 
+                  {weekDays.map((day, idx) => {
+                    const isWeekend = day.getDay() === 0 || day.getDay() === 6;
+                    return <col key={`col-${idx}`} className={isWeekend ? "w-[60px]" : "w-1/5"} />;
+                  })}
+                </colgroup>
+                <thead className="text-sm font-medium">
                   <tr>
-                    <th className="w-20 p-2 border-b border-r bg-muted/50 text-muted-foreground text-sm font-medium">
+                    <th className="border-b border-r bg-muted/50 " />
+                    {(() => {
+                      const monthStyles: Record<string, { header: string; day: string }> = {
+                        enero: { header: "bg-blue-500/15 text-blue-800", day: "bg-blue-500/5" },
+                        febrero: { header: "bg-pink-500/15 text-pink-800", day: "bg-pink-500/5" },
+                        marzo: { header: "bg-emerald-500/15 text-emerald-800", day: "bg-emerald-500/5" },
+                        abril: { header: "bg-purple-500/20 text-purple-900", day: "bg-purple-500/10" },
+                        mayo: { header: "bg-sky-500/15 text-sky-800", day: "bg-sky-500/5" },
+                        junio: { header: "bg-amber-500/20 text-amber-900", day: "bg-amber-500/10" },
+                        julio: { header: "bg-teal-500/15 text-teal-800", day: "bg-teal-500/5" },
+                        agosto: { header: "bg-indigo-500/15 text-indigo-800", day: "bg-indigo-500/5" },
+                        septiembre: { header: "bg-lime-500/15 text-lime-800", day: "bg-lime-500/5" },
+                        octubre: { header: "bg-orange-500/15 text-orange-800", day: "bg-orange-500/5" },
+                        noviembre: { header: "bg-cyan-500/15 text-cyan-800", day: "bg-cyan-500/5" },
+                        diciembre: { header: "bg-rose-500/15 text-rose-800", day: "bg-rose-500/5" },
+                      };
+                      
+                      const getStylesForDate = (date: Date) => {
+                        const mName = date.toLocaleDateString("es-AR", { month: "long" }).toLowerCase();
+                        return monthStyles[mName] || { header: "bg-muted text-muted-foreground", day: "bg-muted/30" };
+                      };
+
+                      (globalThis as any)._getStyles = getStylesForDate;
+                      
+                      const monthGroups: { month: string; count: number }[] = [];
+                      
+                      weekDays.forEach((day) => {
+                        const monthName = day.toLocaleDateString("es-AR", { month: "long" });
+                        const lastGroup = monthGroups[monthGroups.length - 1];
+                        
+                        if (lastGroup && lastGroup.month === monthName) {
+                          lastGroup.count++;
+                        } else {
+                          monthGroups.push({ month: monthName, count: 1 });
+                        }
+                      });
+
+                      return (
+                        <>
+                          {monthGroups.map((group, index) => {
+                            const mName = group.month.toLowerCase();
+                            const styles = monthStyles[mName] || { header: "bg-muted text-muted-foreground", day: "" };
+                            return (
+                              <th
+                                key={`month-${index}`}
+                                colSpan={group.count}
+                                className={cn(
+                                  "p-2 border-b border-r text-center font-bold capitalize text-xs tracking-wider transition-colors",
+                                  styles.header
+                                )}
+                              >
+                                {group.month}
+                              </th>
+                            );
+                          })}
+                        </>
+                      );
+                    })()}
+                  </tr>
+                  <tr>
+                    <th className="p-2 border-b border-r bg-muted/50 text-muted-foreground text-sm font-medium">
                       Hora
                     </th>
                     {weekDays.map((day, index) => {
-                      const isSunday = day.getDay() === 0;
-                      const isSaturday = day.getDay() === 6;
+                      
+                      const dateStyles = (globalThis as any)._getStyles ? (globalThis as any)._getStyles(day) : { day: "bg-muted/30" };
+                      
                       return (
                         <th
                           key={index}
-                          className={`p-2 border-b text-center  ${
-                            isSunday || isSaturday ? "w-[60px]" : "w-auto"
-                          }  ${isToday(day) ? "bg-primary/10" : "bg-muted/30"
-                          }`}
+                          className={cn(
+                            "p-2 border-b text-center border-r last:border-r-0 transition-colors",
+                            isToday(day) ? "bg-primary/70 ring-2 ring-primary/20" : dateStyles.day
+                          )}
                         >
-                          <div className="text-xs text-muted-foreground uppercase">
+                          <div className={cn(
+                            "text-xs uppercase font-medium",
+                            isToday(day) ? "text-muted font-bold " : "text-muted-foreground/90"
+                          )}>
                             {day.toLocaleDateString("es-AR", { weekday: "short" })}
                           </div>
                           <div
-                            className={`text-lg font-semibold ${
-                              isToday(day) ? "text-primary" : ""
-                            }`}
+                            className={cn(
+                              "text-lg font-bold",
+                              isToday(day) ? "text-muted" : "text-foreground/90"
+                            )}
                           >
                             {day.getDate()}
                           </div>
@@ -249,9 +364,6 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
                       </td>
                       {weekDays.map((day, dayIndex) => {
                         const dayAppointments = getAppointmentForSlot(day, hour)
-                        // console.log("weekDays.map day: ", day)
-                        // console.log("weekDays.map dayIndex: ", dayIndex)
-                        // console.log("weekDays.map dayAppointments: ", dayAppointments)
                         const isSunday = day.getDay() === 0
                         const isSaturday = day.getDay() === 6
                         
@@ -260,7 +372,7 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
                             key={dayIndex}
                             className={`p-1 border-b border-r h-12 align-top ${
                               isToday(day) ? "bg-primary/5" : ""
-                            } ${isSunday || isSaturday ? "bg-muted/40 w-[60px]" : ""}`}
+                            } ${isSunday || isSaturday ? "bg-muted/40" : ""}`}
                           >
                             {dayAppointments.map((apt) => (
                               <button
@@ -273,9 +385,6 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
                               >
                                 <div className="font-semibold truncate">
                                   {apt.time} - {apt.patientName}
-                                </div>
-                                <div className="truncate opacity-90">
-                                  {getLocationName(apt.locationId)}
                                 </div>
                               </button>
                             ))}
@@ -291,160 +400,6 @@ export function ProfessionalCalendar({ professional }: ProfessionalCalendarProps
         </CardContent>
       </Card>
 
-      {/* Dialog con detalles del turno */}
-      {/* <Dialog open={!!selectedAppointment} onOpenChange={() => setSelectedAppointment(null)}>
-        <DialogContent className="sm:max-w-md p-3">
-          <DialogHeader className="p-0 space-y-0 ">
-            <DialogTitle className="text-lg font-semibold tracking-tight text-foreground flex items-center justify-between w-full pr-8">
-              <span>
-                Detalle del Turno
-              </span>
-            </DialogTitle>
-          </DialogHeader>
-              
-              <div className="flex justify-start ">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild >
-                <Badge
-                  className={`${getStatusColor(selectedAppointment?.status || "")} text-card border-3 cursor-pointer hover:scale-105 transition-transform`}
-                >
-                  {getStatusText(selectedAppointment?.status || "")}
-                </Badge>
-                  </DropdownMenuTrigger>
-
-                  <DropdownMenuContent align="start" className="p-0.5">
-                    {selectedAppointment?.status !== "confirmed" && (
-                      <DropdownMenuItem
-                        className="cursor-pointer"
-                        onClick={() => {
-
-                          selectedAppointment && 
-                          handleStatusChange(selectedAppointment.id, "confirmed")
-                          
-                          selectedAppointment && setSelectedAppointment({...selectedAppointment, status:"confirmed"} as AppointmentWithService)
-                        }
-                        }
-                      >
-                        <Check className="h-4 w-4 mr-2 text-green-600" />
-                        Confirmar
-                      </DropdownMenuItem>
-                    )}
-
-                    {selectedAppointment?.status !== "cancelled" && (
-                      <DropdownMenuItem
-                        className="cursor-pointer"
-                        onClick={() => {
-
-                          selectedAppointment &&
-                          handleStatusChange(selectedAppointment.id, "cancelled")
-                          selectedAppointment && setSelectedAppointment({...selectedAppointment, status:"cancelled"} as AppointmentWithService)
-                        
-                          selectedAppointment && setSelectedAppointment({...selectedAppointment, status:"cancelled"} as AppointmentWithService)
-                        }
-                        }
-                      >
-                        <X className="h-4 w-4 mr-2 text-amber-600" />
-                        Cancelar
-                      </DropdownMenuItem>
-                    )}
-
-                    <DropdownMenuItem
-                      className="text-destructive focus:text-destructive cursor-pointer"
-                      onClick={() =>
-                        selectedAppointment &&
-                        handleDelete(selectedAppointment.id)
-                      }
-                    >
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      Eliminar
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-              
-              {selectedAppointment && (
-                <div className="space-y-1">
-                  <Card className="h-25">
-                    <div className="px-6 pb-0 -mt-4">
-                      <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                        <Clock className="h-4 w-4" />
-                        Fecha y Hora
-                      </CardTitle>
-                    </div>
-                    <div className="px-6 pb-0 -mt-4">
-                      <p className="font-semibold">
-                        {new Date(selectedAppointment.date + "T12:00:00").toLocaleDateString("es-AR", {
-                          weekday: "long",
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        })}
-                      </p>
-                      <p className="text-lg text-primary font-bold">{selectedAppointment.time} hs</p>
-                    </div>
-                  </Card>
-
-                  <Card className="h-30">
-                    <div className="px-6 pb-0 -mt-4">
-                      <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                        <User className="h-4 w-4" />
-                        Paciente
-                      </CardTitle>
-                    </div>
-                    <div className="px-6 pb-0 -mt-4">
-                      <p className="font-semibold text-lg">{selectedAppointment.patientName}</p>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Mail className="h-4 w-4" />
-                        <a href={`mailto:${selectedAppointment.patientEmail}`} className="hover:text-primary">
-                          {selectedAppointment.patientEmail}
-                        </a>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Phone className="h-4 w-4" />
-                        <a href={`tel:${selectedAppointment.patientPhone}`} className="hover:text-primary">
-                          {selectedAppointment.patientPhone}
-                        </a>
-                      </div>
-                    </div>
-                  </Card>
-
-                  <Card className="h-20">
-                    <div className="px-6 pb-0 -mt-4">
-                      <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                        <Stethoscope className="h-4 w-4" />
-                        Servicio y Ubicacion
-                      </CardTitle>
-                    </div>
-                    <div className="px-6 pb-0 -mt-4">
-                      {selectedAppointment.service && (
-                        <div className="flex items-center gap-2">
-                          <Badge variant="secondary">{selectedAppointment.service}</Badge>
-                        </div>
-                      )}
-                      <div className="flex items-center gap-2 text-sm">
-                        <MapPin className="h-4 w-4 text-muted-foreground" />
-                        <span>{getLocationName(selectedAppointment.locationId)}</span>
-                      </div>
-                    </div>
-                  </Card>
-
-                  {selectedAppointment.notes && (
-                    <Card >
-                      <div className="px-6 pb-0 -mt-4">
-                          <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                            <FileText className="h-4 w-4" />
-                            Notas
-                          </CardTitle>
-                      </div>
-                        <div className="px-6 pb-0 -mt-4">
-                          <p className="text-sm">{selectedAppointment.notes}</p>
-                      </div>
-                    </Card>
-                  )}
-                </div>
-              )}
-        </DialogContent>
-      </Dialog> */}
       <AppointmentDetailDialog
         appointment={selectedAppointment}
         isOpen={!!selectedAppointment}
