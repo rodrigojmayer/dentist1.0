@@ -177,28 +177,6 @@ export function AppointmentsTable({
               </td>
               {/* Filtro Estado */}
               <td className="px-0 text-center">
-                {/* <Select 
-                  value={statusFilter} 
-                  onValueChange={(value) => setStatusFilter(value)}
-                >
-                  <SelectTrigger className="h-8 w-full max-w-[160px] text-xs cursor-pointer bg-background text-foreground">
-                    <SelectValue placeholder="Todos" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all" className="cursor-pointer text-xs">
-                      Todos
-                    </SelectItem>
-                    <SelectItem value="pending" className="cursor-pointer text-xs">
-                      Pendientes
-                    </SelectItem>
-                    <SelectItem value="confirmed" className="cursor-pointer text-xs">
-                      Confirmados
-                    </SelectItem>
-                    <SelectItem value="cancelled" className="cursor-pointer text-xs">
-                      Cancelados
-                    </SelectItem>
-                  </SelectContent>
-                </Select> */}
               </td>
               {/* Botón de limpiar filtros rápidos */}
               <td className="px-2 text-center pr-4">
@@ -262,27 +240,45 @@ export function AppointmentsTable({
                   <td className="p-4 text-center" onClick={(e) => e.stopPropagation()}>
                     <DropdownMenu modal={false}>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0  cursor-pointer">
-                          <MoreHorizontal className="h-4 w-4" />
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="group h-8 w-8 p-1 cursor-pointer hover:bg-transparent">
+                          <MoreHorizontal className="h-4 w-4 transition-transform duration-200 group-hover:scale-150" />
                           <span className="sr-only">Abrir menu</span>
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="z-1">
+                      <DropdownMenuContent align="end" className="z-1 cursor-pointer p-0.5 ">
                         {appointment.status !== "confirmed" && (
-                          <DropdownMenuItem onClick={() => onStatusChange(appointment.id, "confirmed")}>
+                          <DropdownMenuItem 
+                            onClick={() => onStatusChange(appointment.id, "confirmed")} 
+                            className={cn(
+                              "cursor-pointer border border-transparent  transition-colors",
+                              "data-[highlighted]:bg-green-100 data-[highlighted]:text-green-800 data-[highlighted]:border-green-400"
+                            )}
+                          >
                             <Check className="h-4 w-4 mr-2 text-green-600" />
                             Confirmar
                           </DropdownMenuItem>
                         )}
                         {appointment.status !== "cancelled" && (
-                          <DropdownMenuItem onClick={() => onStatusChange(appointment.id, "cancelled")}>
-                            <X className="h-4 w-4 mr-2 text-amber-600" />
+                          <DropdownMenuItem 
+                            onClick={() => onStatusChange(appointment.id, "cancelled")} 
+                            className={cn(
+                              "cursor-pointer border border-transparent  transition-colors",
+                              "data-[highlighted]:bg-red-100 data-[highlighted]:text-red-800 data-[highlighted]:border-red-400"
+                            )}
+                          >
+                            <X className="h-4 w-4 mr-2 text-red-600" />
                             Cancelar
                           </DropdownMenuItem>
                         )}
                         <DropdownMenuItem 
                           onClick={() => onDelete(appointment.id)}
-                          className="text-destructive focus:text-destructive"
+                          className={cn(
+                            "cursor-pointer border border-transparent text-destructive transition-colors",
+                            "data-[highlighted]:bg-destructive/50 data-[highlighted]:text-muted data-[highlighted]:border-destructive/100"
+                          )}
                         >
                           <Trash2 className="h-4 w-4 mr-2" />
                           Eliminar
