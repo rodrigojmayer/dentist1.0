@@ -2,6 +2,7 @@
 import Image from "next/image"
 import { Sun, Phone, MapPin, Instagram, Facebook } from "lucide-react"
 import Link from "next/link"
+import { LoginAdminButton } from "./loginButton"
 
 const NAV_LINKS = [
   // { href: "/#equipo", label: "Equipo" },
@@ -70,7 +71,7 @@ export function Footer() {
           <div>
             <h3 className="font-semibold mb-4">Enlaces</h3>
 
-            <div className="space-y-3">
+            {/* <div className="space-y-3">
               {NAV_LINKS.map((link) => (
                 <Link 
                   key={link.href} 
@@ -80,7 +81,8 @@ export function Footer() {
                   {link.label}
                 </Link>
               ))}
-            </div>
+            </div> */}
+            <LoginAdminButton/>
           </div>
         </div>
 
