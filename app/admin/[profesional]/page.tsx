@@ -30,7 +30,7 @@ export default async function ProfessionalPage({
 
   return (
     <div className="min-h-screen bg-background pt-20 md:pt-24">
-      <Header isAdmin={true} />
+      <Header isAdminPage={true} />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-6">
         <div>
