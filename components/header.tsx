@@ -190,14 +190,16 @@ export function Header({ isAdmin = false }: HeaderProps) {
                     <DropdownMenuTrigger asChild>
                       <Button 
                         variant="ghost" 
-                        className={`cursor-pointer gap-2 font-medium px-3 h-10 focus-visible:ring-0 focus-visible:ring-offset-0 ${
+                        className={`group cursor-pointer gap-2 font-medium px-3 h-10 focus-visible:ring-0 focus-visible:ring-offset-0 hover:text-primary hover:bg-muted/0 ${
                           isAdmin 
-                            ? "text-background hover:bg-background/10 hover:text-background" 
-                            : "text-foreground hover:bg-muted"
+                            ? "text-background " 
+                            : "text-foreground"
                         }`}
                       >
-                        <div className={`w-7 h-7 rounded-full flex items-center justify-center ${isAdmin ? "bg-background/20 text-background" : "bg-primary/10 text-primary"}`}>
-                          <UserIcon className="h-4 w-4" />
+                        <div className={`w-7 h-7 rounded-full flex items-center justify-center ${isAdmin 
+                          ? "bg-background/20 text-background group-hover:bg-primary group-hover:text-primary-foreground transition-colors" 
+                          : "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors"}`}>
+                          <UserIcon className="h-4 w-4 " />
                         </div>
                         <span className="max-w-[120px] truncate">
                           {user ? (user.user_metadata?.full_name || user.email?.split("@")[0]) : "Invitado" }
@@ -228,21 +230,30 @@ export function Header({ isAdmin = false }: HeaderProps) {
                       }
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
+                      
+                        {user ?
+                      <DropdownMenuItem 
+                        onClick={handleLogout}
+                        // className="cursor-pointer gap-2 text-sm text-destructive focus:text-destructive focus:bg-destructive/5"
+                          className="data-[highlighted]:bg-destructive/50 data-[highlighted]:text-muted data-[highlighted]:border-destructive/100"
+                      >
+                        
+                            <LogOut className="h-4 w-4 " />
+                            Cerrar sesión
+                          </DropdownMenuItem>
+                        :
+                        
                       <DropdownMenuItem 
                         // onClick={handleLogout}
-                        className="cursor-pointer gap-2 text-sm text-destructive focus:text-destructive focus:bg-destructive/5"
+                        // className="cursor-pointer gap-2 text-sm text-destructive focus:text-destructive focus:bg-destructive/5"
+                          className="data-[highlighted]:bg-green-50 data-[highlighted]:text-muted data-[highlighted]:border-green-100"
                       >
-                        {user ?
-                          <span onClick={handleLogout}>
-                            <LogOut className="h-4 w-4" />
-                            Cerrar sesión
-                          </span>
-                        :
                           <Link href="/registro" className="hover:text-foreground transition-colors">
                             Crear usuario
                           </Link>
+                          </DropdownMenuItem>
                         }
-                    </DropdownMenuItem>
+                   
                     </DropdownMenuContent>
                   </DropdownMenu>
               )}
