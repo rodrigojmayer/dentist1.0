@@ -3,28 +3,18 @@
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
-import { Menu, X, ChevronDown, User as UserIcon, LogOut, Settings } from "lucide-react"
+import { Menu, X, User as UserIcon, LogOut, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useProfessionalContext } from "@/context/professionalsContext"
-import { cn } from "@/lib/utils"
-import { createClient } from "@/lib/supabase/client" // 👈 Ajustá esta ruta a tu inicializador de Supabase
+import { createClient } from "@/lib/supabase/client"
 import { type User } from "@supabase/supabase-js"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { LoginAdminButton } from "./loginButton"
+
+// Importamos los nuevos subcomponentes
+import { HeaderAdminNavigation } from "./HeaderAdminNavigation"
+import { HeaderPublicNavigation } from "./HeaderPublicNavigation"
+import { HeaderUserMenu } from "./HeaderUserMenu"
 
 interface HeaderProps {
   isAdminPage?: boolean
@@ -33,40 +23,58 @@ interface HeaderProps {
 export function Header({ isAdminPage = false }: HeaderProps) {
   const [user, setUser] = useState<User | null>(null)
   const [loadingUser, setLoadingUser] = useState(true)
+  const [userProfile, setUserProfile] = useState<{ role: string } | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false) // 🌟 Controla el modal central
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
   const pathname = usePathname()
   const supabase = createClient()
 
-  // Evaluamos en qué sección del admin estamos parados
   const isGestionTurnosActive = pathname === "/admin"
-  // const isAgendaSemanalActive = pathname.startsWith("/admin/")
-
-  // Consumimos los profesionales directamente del contexto global
   const { professionals, loading: loadingPros } = useProfessionalContext()
 
-  // Controlar el estado de la sesión de Supabase
+  // Manejo de Sesión de Supabase
   useEffect(() => {
+    // 1. Función para ir a buscar el rol a la tabla de perfiles personalizados
+    const fetchProfile = async (userId: string) => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', userId)
+        .single()
+      setUserProfile(data)
+    }
+
+    // 2. Tu checkSession original (Verificación rápida inicial al cargar la página)
     const checkSession = async () => {
       const { data: { user } } = await supabase.auth.getUser()
-      console.log("user: ", user)
       setUser(user)
+      if (user) {
+        await fetchProfile(user.id) // 👈 Si hay usuario, buscamos su rol al toque
+      }
       setLoadingUser(false)
     }
     checkSession()
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
+    // 3. El oyente de Supabase (Escucha si el usuario inicia o cierra sesión más adelante)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const currentUser = session?.user ?? null
+      setUser(currentUser)
+      
+      if (currentUser) {
+        await fetchProfile(currentUser.id) // 👈 Si el estado de auth cambia (ej: se loguea), buscamos el rol
+      } else {
+        setUserProfile(null) // Si desloguea, limpiamos el perfil
+      }
       setLoadingUser(false)
     })
 
     return () => subscription.unsubscribe()
   }, [supabase])
 
-  // Cerrar el dropdown si el usuario hace clic afuera de él
+  // Click Outside para cerrar dropdowns
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -93,13 +101,15 @@ export function Header({ isAdminPage = false }: HeaderProps) {
       <header className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-sm border-b border-border ${isAdminPage ? "bg-foreground" : "bg-background/95"} w-screen`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative flex items-center justify-between h-16 md:h-20">
+            
+            {/* Logo e Identidad */}
             <Link href="/" className="flex items-center gap-2 z-10">
-              {/* <Sun className="h-8 w-8 text-accent" /> */}
               <img src="/Gemini_Generated_Image_qswhjbqswhjbqswh-removebg-preview8.png" className="h-15 w-auto object-contain block pb-2"/>
               <span className={`font-serif text-xl md:text-2xl font-semibold ${isAdminPage ? "text-background/95" : "text-foreground"}`}>
                 Instituto Odontológico Austral
               </span>
             </Link>
+
             {isAdminPage && (
               <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:block z-10">
                 <span className="text-muted-foreground font-medium text-xs md:text-sm tracking-wide bg-muted px-3 py-1.5 rounded-full border border-border/50 whitespace-nowrap">
@@ -108,85 +118,23 @@ export function Header({ isAdminPage = false }: HeaderProps) {
               </div>
             )}
 
-            {/* Navegación y Login */}
-            <div className="flex items-center gap-8">
+            {/* ZONA DE NAVEGACIÓN (Condicional limpia con subcomponentes) */}
+            <div className="flex items-center gap-8" ref={dropdownRef}>
               {isAdminPage ? (
-                <nav className="hidden md:flex items-center gap-8">
-                  <Link 
-                    href="/admin" 
-                    className={` 
-                      ${isGestionTurnosActive ? 
-                        "text-background/60 pointer-events-none cursor-default" 
-                      : 
-                        "text-background cursor-pointer hover:text-primary"
-                      } 
-                      font-medium 
-                      text-sm
-                    `}
-                  >
-                    Gestión turnos
-                  </Link>
-                  <div className="relative" ref={dropdownRef}>
-                    <button
-                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                      className={` 
-                        flex 
-                        items-center 
-                        gap-1 
-                        transition-colors 
-                        text-sm  
-                        focus:outline-none
-                        text-background 
-                        cursor-pointer 
-                        hover:text-primary
-                      `}
-                    >
-                      Agenda semanal
-                      <ChevronDown className={`h-4 w-4 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
-                    </button>
-
-                    {isDropdownOpen && (
-                      <div className="absolute right-0 mt-2 w-56 rounded-md border border-border bg-popover shadow-lg z-50 py-1 animate-in fade-in-50 slide-in-from-top-1">
-                        {loadingPros ? (
-                          <div className="px-4 py-2 text-xs text-muted-foreground">Cargando profesionales...</div>
-                        ) : !Array.isArray(professionals) || professionals.length === 0 ? (
-                          <div className="px-4 py-2 text-xs text-muted-foreground">No hay profesionales.</div>
-                        ) : (
-                          professionals.map((pro) => (
-                            <button
-                              key={pro.id}
-                              onClick={() => handleProfessionalSelect(pro.id)}
-                              className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors font-normal cursor-pointer block truncate"
-                            >
-                              <span className="block font-medium">{pro.name}</span>
-                              <span className="block text-[10px] text-muted-foreground truncate">{pro.specialties?.[0] || "Odontología"}</span>
-                            </button>
-                          ))
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </nav>
+                <HeaderAdminNavigation 
+                  isGestionTurnosActive={isGestionTurnosActive}
+                  isDropdownOpen={isDropdownOpen}
+                  setIsDropdownOpen={setIsDropdownOpen}
+                  loadingPros={loadingPros}
+                  professionals={professionals}
+                  handleProfessionalSelect={handleProfessionalSelect}
+                />
               ) : (
-                <nav className="hidden md:flex items-center gap-8">
-                  <Link href="/#equipo" className="text-muted-foreground hover:text-primary transition-colors">
-                    Equipo
-                  </Link>
-                  <Link href="/#nosotros" className="text-muted-foreground hover:text-primary transition-colors">
-                    Nosotros
-                  </Link>
-                  <Link href="/#contacto" className="text-muted-foreground hover:text-primary transition-colors">
-                    Contacto
-                  </Link>
-                  <Link href="/#servicios" className="text-muted-foreground hover:text-primary transition-colors">
-                    Servicios
-                  </Link>
-                </nav>
+                <HeaderPublicNavigation />
               )}
 
-              {/* Espacio Dinámico: Auth Links / User Menu Dropdown */}
+              {/* Acciones de Login y Botón de Reserva */}
               <div className="hidden md:flex items-center gap-4">
-                {/* Botón Sacar Turno (Solo visible en Home) */}
                 {!isAdminPage && (
                   <Link href="/reservar">
                     <Button className="bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer">
@@ -194,71 +142,18 @@ export function Header({ isAdminPage = false }: HeaderProps) {
                     </Button>
                   </Link>
                 )}
-                {!loadingUser && (
-                  user ? (
-                    /* 🌟 SI EL USUARIO ESTÁ LOGUEADO: Muestra su Dropdown de perfil de siempre */
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button 
-                          variant="ghost" 
-                          className={`group cursor-pointer gap-2 font-medium px-3 h-10 focus-visible:ring-0 focus-visible:ring-offset-0 hover:text-primary hover:bg-muted/0 ${
-                            isAdminPage ? "text-background " : "text-foreground"
-                          }`}
-                        >
-                          <div className={`w-7 h-7 rounded-full flex items-center justify-center ${isAdminPage 
-                            ? "bg-background/20 text-background group-hover:bg-primary group-hover:text-primary-foreground transition-colors" 
-                            : "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors"}`}>
-                            <UserIcon className="h-4 w-4 " />
-                          </div>
-                          <span className="max-w-[120px] truncate">
-                            {user.user_metadata?.full_name || user.email?.split("@")[0]}
-                          </span>
-                          <ChevronDown className="h-3 w-3 opacity-70" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="p-1 w-56 mt-1 z-50">
-                        {isAdminPage && (
-                          <DropdownMenuItem asChild className="hover:bg-muted focus:bg-muted focus:text-primary cursor-pointer">
-                            <Link href="/admin">
-                              <Settings className="h-4 w-4 text-muted-foreground" />
-                              Gestión Administrador
-                            </Link>
-                          </DropdownMenuItem>
-                        )}
-                        <DropdownMenuItem asChild className="hover:bg-muted focus:bg-muted focus:text-primary cursor-pointer">
-                          <Link href="/perfil">
-                            <Settings className="h-4 w-4 text-muted-foreground" />
-                            Configurar usuario
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem 
-                          onClick={handleLogout}
-                          className="text-destructive data-[highlighted]:bg-destructive/10 data-[highlighted]:text-destructive cursor-pointer"
-                        >
-                          <LogOut className="h-4 w-4" />
-                          Cerrar sesión
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  ) : (
-                    /* 🌟 SI NO ESTÁ LOGUEADO: Un botón limpio que abre el modal DIRECTAMENTE */
-                    <Button 
-                      variant="ghost" 
-                      onClick={() => setIsLoginModalOpen(true)}
-                      className={`group cursor-pointer gap-2 font-medium px-3 h-10 hover:text-primary hover:bg-muted/0 ${
-                        isAdminPage ? "text-background " : "text-foreground"
-                      }`}
-                    >
-                      <div className={`w-7 h-7 rounded-full flex items-center justify-center ${isAdminPage 
-                        ? "bg-background/20 text-background group-hover:bg-primary group-hover:text-primary-foreground transition-colors" 
-                        : "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors"}`}>
-                        <UserIcon className="h-4 w-4 " />
-                      </div>
-                      <span>Invitado</span>
-                    </Button>
-                  )
-                )}
+                
+                <HeaderUserMenu 
+                  user={user}
+                  role={userProfile?.role}
+                  loadingUser={loadingUser}
+                  isAdminPage={isAdminPage}
+                  setIsLoginModalOpen={setIsLoginModalOpen}
+                  handleLogout={handleLogout}
+                />
               </div>
+
+              {/* Hamburguesa Móvil */}
               <button
                 type="button"
                 className="md:hidden p-2 text-foreground"
@@ -268,57 +163,58 @@ export function Header({ isAdminPage = false }: HeaderProps) {
                 {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
             </div>
+
           </div>
         </div>
 
-        {/* Menú móvil simplificado */}
-          {!isAdminPage && isMenuOpen && (
-            <div className="md:hidden py-4 border-t border-border bg-background px-4">
-              <nav className="flex flex-col gap-4">
-                <Link href="/#equipo" className="text-muted-foreground" onClick={() => setIsMenuOpen(false)}>Equipo</Link>
-                <Link href="/#nosotros" className="text-muted-foreground" onClick={() => setIsMenuOpen(false)}>Nosotros</Link>
-                <Link href="/#contacto" className="text-muted-foreground" onClick={() => setIsMenuOpen(false)}>Contacto</Link>
-                <Link href="/#servicios" className="text-muted-foreground" onClick={() => setIsMenuOpen(false)}>Servicios</Link>
-                
-                {!loadingUser && !user && (
-                  <div className="flex flex-col gap-2 pt-2 border-t border-border">
-                    {/* Dejamos un solo botón limpio que abre el modal de una */}
-                    <Button 
-                      variant="outline" 
-                      className="w-full justify-start gap-2" 
-                      onClick={() => { setIsMenuOpen(false); setIsLoginModalOpen(true); }}
-                    >
-                      <UserIcon className="h-4 w-4" />
-                      Ingresar / Registrarse
-                    </Button>
-                  </div>
-                )}
-
-                {user && (
-                  <div className="flex flex-col gap-2 pt-2 border-t border-border">
-                    <div className="text-xs text-muted-foreground px-1 truncate">Logueado como: {user.email}</div>
-                    <Button variant="outline" asChild className="w-full justify-start gap-2" onClick={() => setIsMenuOpen(false)}>
-                      <Link href="/perfil"><Settings className="h-4 w-4" /> Configurar usuario</Link>
-                    </Button>
-                    <Button variant="destructive" className="w-full justify-start gap-2" onClick={() => { setIsMenuOpen(false); handleLogout(); }}>
-                      <LogOut className="h-4 w-4" /> Cerrar sesión
-                    </Button>
-                  </div>
-                )}
-
-                <Link href="/reservar" onClick={() => setIsMenuOpen(false)}>
-                  <Button className="w-full bg-primary text-primary-foreground">
-                    Reservar turno
+        {/* Menú móvil (Se mantiene acá por simplicidad de estados locales del responsive) */}
+        {!isAdminPage && isMenuOpen && (
+          <div className="md:hidden py-4 border-t border-border bg-background px-4">
+            <nav className="flex flex-col gap-4">
+              <Link href="/#equipo" className="text-muted-foreground" onClick={() => setIsMenuOpen(false)}>Equipo</Link>
+              <Link href="/#nosotros" className="text-muted-foreground" onClick={() => setIsMenuOpen(false)}>Nosotros</Link>
+              <Link href="/#contacto" className="text-muted-foreground" onClick={() => setIsMenuOpen(false)}>Contacto</Link>
+              <Link href="/#servicios" className="text-muted-foreground" onClick={() => setIsMenuOpen(false)}>Servicios</Link>
+              
+              {!loadingUser && !user && (
+                <div className="flex flex-col gap-2 pt-2 border-t border-border">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start gap-2" 
+                    onClick={() => { setIsMenuOpen(false); setIsLoginModalOpen(true); }}
+                  >
+                    <UserIcon className="h-4 w-4" />
+                    Ingresar / Registrarse
                   </Button>
-                </Link>
-              </nav>
-            </div>
+                </div>
+              )}
+
+              {user && (
+                <div className="flex flex-col gap-2 pt-2 border-t border-border">
+                  <div className="text-xs text-muted-foreground px-1 truncate">Logueado como: {user.email}</div>
+                  <Button variant="outline" asChild className="w-full justify-start gap-2" onClick={() => setIsMenuOpen(false)}>
+                    <Link href="/perfil"><Settings className="h-4 w-4" /> Configurar usuario</Link>
+                  </Button>
+                  <Button variant="destructive" className="w-full justify-start gap-2" onClick={() => { setIsMenuOpen(false); handleLogout(); }}>
+                    <LogOut className="h-4 w-4" /> Cerrar sesión
+                  </Button>
+                </div>
+              )}
+
+              <Link href="/reservar" onClick={() => setIsMenuOpen(false)}>
+                <Button className="w-full bg-primary text-primary-foreground">
+                  Reservar turno
+                </Button>
+              </Link>
+            </nav>
+          </div>
         )}
       </header>
-    {/* 🌟 MODAL CENTRALIZADO DE AUTENTICACIÓN */}
+
+      {/* Modal Central de Autenticación */}
       <Dialog open={isLoginModalOpen} onOpenChange={setIsLoginModalOpen}>
         <DialogContent className="sm:max-w-[420px] p-0 overflow-hidden bg-background border-border">
-          <DialogHeader className="pt-6 px-6 textAlign-center">
+          <DialogHeader className="pt-6 px-6">
             <DialogTitle className="text-xl font-semibold text-center font-serif">
               Ingresar al Portal
             </DialogTitle>
@@ -326,8 +222,6 @@ export function Header({ isAdminPage = false }: HeaderProps) {
               Iniciá sesión para gestionar tus turnos en el Instituto.
             </DialogDescription>
           </DialogHeader>
-          
-          {/* Tu componente con Google Auth + Magic Link unificados */}
           <div className="pb-4">
             <LoginAdminButton />
           </div>
