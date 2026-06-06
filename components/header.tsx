@@ -15,6 +15,7 @@ import { LoginAdminButton } from "./loginButton"
 import { HeaderAdminNavigation } from "./HeaderAdminNavigation"
 import { HeaderPublicNavigation } from "./HeaderPublicNavigation"
 import { HeaderUserMenu } from "./HeaderUserMenu"
+import { HeaderUserConfigModal } from "./HeaderUserConfigModal"
 
 interface HeaderProps {
   isAdminPage?: boolean
@@ -22,8 +23,8 @@ interface HeaderProps {
 
 export function Header({ isAdminPage = false }: HeaderProps) {
   const [user, setUser] = useState<User | null>(null)
-  const [loadingUser, setLoadingUser] = useState(true)
-  const [userProfile, setUserProfile] = useState<{ role: string } | null>(null);
+  const [userProfile, setUserProfile] = useState<{ role: string } | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
@@ -31,48 +32,88 @@ export function Header({ isAdminPage = false }: HeaderProps) {
   const router = useRouter()
   const pathname = usePathname()
   const supabase = createClient()
-
+  const [isConfigModalOpen, setIsConfigModalOpen] = useState(false)
+  
   const isGestionTurnosActive = pathname === "/admin"
   const { professionals, loading: loadingPros } = useProfessionalContext()
 
   // Manejo de Sesión de Supabase
   useEffect(() => {
-    // 1. Función para ir a buscar el rol a la tabla de perfiles personalizados
-    const fetchProfile = async (userId: string) => {
-      const { data } = await supabase
+  let isMounted = true; // Evita fugas de memoria y cambios de estado en componentes desmontados
+
+  // Centralizamos la carga del perfil
+  const loadUserData = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', userId)
-        .single()
-      setUserProfile(data)
-    }
-
-    // 2. Tu checkSession original (Verificación rápida inicial al cargar la página)
-    const checkSession = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
-      if (user) {
-        await fetchProfile(user.id) // 👈 Si hay usuario, buscamos su rol al toque
-      }
-      setLoadingUser(false)
-    }
-    checkSession()
-
-    // 3. El oyente de Supabase (Escucha si el usuario inicia o cierra sesión más adelante)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      const currentUser = session?.user ?? null
-      setUser(currentUser)
+        .single();
       
-      if (currentUser) {
-        await fetchProfile(currentUser.id) // 👈 Si el estado de auth cambia (ej: se loguea), buscamos el rol
-      } else {
-        setUserProfile(null) // Si desloguea, limpiamos el perfil
+      if (error) throw error;
+      
+      if (isMounted) {
+        setUserProfile(data);
       }
-      setLoadingUser(false)
-    })
+    } catch (error) {
+      console.error("Error cargando el perfil en Header:", error);
+      if (isMounted) setUserProfile(null);
+    } finally {
+      if (isMounted) setIsLoading(false);
+    }
+  };
 
-    return () => subscription.unsubscribe()
-  }, [supabase])
+  // Inicialización rápida al montar/recargar
+  const initSession = async () => {
+    if (isMounted) setIsLoading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUser(user);
+        await loadUserData(user.id);
+      } else {
+        if (isMounted) {
+          setUser(null);
+          setUserProfile(null);
+          setIsLoading(false);
+        }
+      }
+    } catch (err) {
+      console.error("Error en initSession:", err);
+      if (isMounted) setIsLoading(false);
+    }
+  };
+
+  initSession();
+
+  // Escuchador de cambios de estado (Login / Logout / Token Refresh)
+  const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    // Si es la carga inicial, la ignoramos porque ya la maneja initSession arriba
+    if (event === 'INITIAL_SESSION') return;
+
+    const currentUser = session?.user ?? null;
+
+    if (isMounted) {
+      setUser(currentUser);
+    }
+
+    if (currentUser) {
+      // Si se logueó, traemos el perfil sin clavar un "isLoading" rudo
+      // para que pase de Invitado a Usuario de forma limpia
+      loadUserData(currentUser.id);
+    } else {
+      if (isMounted) {
+        setUserProfile(null);
+        setIsLoading(false);
+      }
+    }
+  });
+
+  return () => {
+    isMounted = false;
+    subscription.unsubscribe();
+  };
+}, [supabase]);
 
   // Click Outside para cerrar dropdowns
   useEffect(() => {
@@ -100,26 +141,39 @@ export function Header({ isAdminPage = false }: HeaderProps) {
     <>
       <header className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-sm border-b border-border ${isAdminPage ? "bg-foreground" : "bg-background/95"} w-screen`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative flex items-center justify-between h-16 md:h-20">
+          <div className="relative flex items-center justify-between h-16 min-[1010px]:h-20">
             
             {/* Logo e Identidad */}
             <Link href="/" className="flex items-center gap-2 z-10">
               <img src="/Gemini_Generated_Image_qswhjbqswhjbqswh-removebg-preview8.png" className="h-15 w-auto object-contain block pb-2"/>
-              <span className={`font-serif text-xl md:text-2xl font-semibold ${isAdminPage ? "text-background/95" : "text-foreground"}`}>
+              <span className={`font-serif text-xl min-[1010px]:text-2xl font-semibold ${isAdminPage ? "text-background/95" : "text-foreground"}`}>
                 Instituto Odontológico Austral
               </span>
             </Link>
 
             {isAdminPage && (
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:block z-10">
-                <span className="text-muted-foreground font-medium text-xs md:text-sm tracking-wide bg-muted px-3 py-1.5 rounded-full border border-border/50 whitespace-nowrap">
+              // <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:block z-10">
+                <span className="text-muted font-medium text-xs md:text-sm tracking-wide bg-primary m-3 px-3 py-1.5 rounded-full border border-border/50 whitespace-nowrap">
                   Panel de Administración
                 </span>
-              </div>
+              //  </div>
             )}
 
+            {/* Hamburguesa Móvil */}
+            <button
+              type="button"
+              className={`min-[1010px]:hidden p-2 z-10 rounded-md transition-colors cursor-pointer ${
+                isAdminPage ? "text-background/95 hover:bg-background/10" : "text-foreground hover:bg-muted"
+              }`}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+
+
             {/* ZONA DE NAVEGACIÓN (Condicional limpia con subcomponentes) */}
-            <div className="flex items-center gap-8" ref={dropdownRef}>
+            <div className="hidden min-[1010px]:flex items-center gap-8" ref={dropdownRef}>
               {isAdminPage ? (
                 <HeaderAdminNavigation 
                   isGestionTurnosActive={isGestionTurnosActive}
@@ -134,7 +188,7 @@ export function Header({ isAdminPage = false }: HeaderProps) {
               )}
 
               {/* Acciones de Login y Botón de Reserva */}
-              <div className="hidden md:flex items-center gap-4">
+              <div className="flex items-center gap-4">
                 {!isAdminPage && (
                   <Link href="/reservar">
                     <Button className="bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer">
@@ -143,25 +197,40 @@ export function Header({ isAdminPage = false }: HeaderProps) {
                   </Link>
                 )}
                 
-                <HeaderUserMenu 
-                  user={user}
-                  role={userProfile?.role}
-                  loadingUser={loadingUser}
-                  isAdminPage={isAdminPage}
-                  setIsLoginModalOpen={setIsLoginModalOpen}
-                  handleLogout={handleLogout}
-                />
+                <div className="w-48 flex justify-end">
+                  {isLoading ? (
+                    /* 🕒 ESQUELETO ADAPTATIVO CON ICONO */
+                    <div className={`flex items-center gap-2 px-3 h-10 w-full justify-start animate-pulse rounded-md border border-transparent ${
+                      isAdminPage ? "bg-background/10" : "bg-muted/20"
+                    }`}>
+                      {/* Contenedor del Icono (Reemplaza al círculo vacío) */}
+                      <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        isAdminPage 
+                          ? "bg-background/20 text-background/50" 
+                          : "bg-primary/10 text-primary/50"
+                      }`}>
+                        <UserIcon className="h-4 w-4" />
+                      </div>
+                      
+                      {/* Barra de Texto */}
+                      <div className={`w-24 h-4 rounded ${
+                        isAdminPage ? "bg-background/20" : "bg-muted"
+                      }`} />
+                    </div>
+                  ) : (
+                    <HeaderUserMenu 
+                      user={user}
+                      role={userProfile?.role}
+                      isAdminPage={isAdminPage}
+                      setIsLoginModalOpen={setIsLoginModalOpen}
+                      setIsConfigModalOpen={setIsConfigModalOpen}
+                      handleLogout={handleLogout}
+                    />
+                  )}
+                </div>
               </div>
 
-              {/* Hamburguesa Móvil */}
-              <button
-                type="button"
-                className="md:hidden p-2 text-foreground"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                aria-label="Toggle menu"
-              >
-                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
+              
             </div>
 
           </div>
@@ -169,14 +238,14 @@ export function Header({ isAdminPage = false }: HeaderProps) {
 
         {/* Menú móvil (Se mantiene acá por simplicidad de estados locales del responsive) */}
         {!isAdminPage && isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border bg-background px-4">
+          <div className="min-[1010px]:hidden py-4 border-t border-border bg-background px-4">
             <nav className="flex flex-col gap-4">
               <Link href="/#equipo" className="text-muted-foreground" onClick={() => setIsMenuOpen(false)}>Equipo</Link>
               <Link href="/#nosotros" className="text-muted-foreground" onClick={() => setIsMenuOpen(false)}>Nosotros</Link>
               <Link href="/#contacto" className="text-muted-foreground" onClick={() => setIsMenuOpen(false)}>Contacto</Link>
               <Link href="/#servicios" className="text-muted-foreground" onClick={() => setIsMenuOpen(false)}>Servicios</Link>
               
-              {!loadingUser && !user && (
+              {!isLoading && !user && (
                 <div className="flex flex-col gap-2 pt-2 border-t border-border">
                   <Button 
                     variant="outline" 
@@ -192,8 +261,12 @@ export function Header({ isAdminPage = false }: HeaderProps) {
               {user && (
                 <div className="flex flex-col gap-2 pt-2 border-t border-border">
                   <div className="text-xs text-muted-foreground px-1 truncate">Logueado como: {user.email}</div>
-                  <Button variant="outline" asChild className="w-full justify-start gap-2" onClick={() => setIsMenuOpen(false)}>
-                    <Link href="/perfil"><Settings className="h-4 w-4" /> Configurar usuario</Link>
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start gap-2" 
+                    onClick={() => { setIsMenuOpen(false); setIsConfigModalOpen(true); }}
+                  >
+                    <Settings className="h-4 w-4" /> Configurar usuario
                   </Button>
                   <Button variant="destructive" className="w-full justify-start gap-2" onClick={() => { setIsMenuOpen(false); handleLogout(); }}>
                     <LogOut className="h-4 w-4" /> Cerrar sesión
@@ -227,6 +300,12 @@ export function Header({ isAdminPage = false }: HeaderProps) {
           </div>
         </DialogContent>
       </Dialog>
+
+      <HeaderUserConfigModal 
+        isOpen={isConfigModalOpen} 
+        onOpenChange={setIsConfigModalOpen} 
+        user={user} 
+      />
     </>
   )
 }
