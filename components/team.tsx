@@ -51,13 +51,13 @@ export function Team() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="flex flex-wrap justify-center gap-6">
           {team.map((member) => (
-            <Card key={member.name} className="overflow-hidden border-border hover:shadow-lg transition-shadow">
+            <Card key={member.name} className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] overflow-hidden border-border hover:shadow-lg transition-shadow">
               {member.image ? 
-                <div className="h-90  ">
+                <div className="aspect-[4/5] w-full overflow-hidden">
                   <img src={member.image} alt={member.name} 
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-center"
                   />
                   </div>
               :
