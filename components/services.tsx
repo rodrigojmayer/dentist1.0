@@ -1,9 +1,16 @@
 // components/Services.tsx
 "use client" // 👈 Esto le avisa a Next.js que acá sí puede usar eventos como onError
 
-import { Activity, Stethoscope, Baby, Smile, ShieldAlert, Sparkles, Scissors } from "lucide-react"
+import { useState } from "react"
+import { Activity, Stethoscope, Baby, Smile, ShieldAlert, Sparkles, Scissors, X } from "lucide-react"
 
-const services = [
+interface Service {
+  title: string;
+  desc: string;
+  image: string;
+}
+
+const services: Service[]= [
   {
     title: "IMPLANTES DENTALES",
     desc: "La solución definitiva y natural para reemplazar piezas faltantes mediante pernos de titanio y coronas a medida.",
