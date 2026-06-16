@@ -74,6 +74,9 @@ const services: Service[]= [
 ]
 
 export function Services() {
+
+  const [selectedService, setSelectedService] = useState<Service | null>(null)
+
   return (
     <section id="servicios" className="py-20 md:py-28 bg-primary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -114,14 +117,77 @@ export function Services() {
                 {service.desc}
               </p>
 
-              <button className="bg-[#dfa233] hover:bg-[#c78f2b] text-white text-xs font-semibold uppercase tracking-wider px-5 py-2 rounded shadow-sm transition-colors duration-200">
+              <button 
+                onClick={() => setSelectedService(service)}
+                className="bg-[#dfa233] hover:bg-[#c78f2b] text-white text-xs font-semibold uppercase tracking-wider px-5 py-2 rounded shadow-sm transition-colors duration-200">
                 Ver más
               </button>
             </div>
           ))}
         </div>
-
       </div>
+      {selectedService && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in"
+          onClick={() => setSelectedService(null)} // Cierra el modal al hacer click en el fondo negro
+        >
+          <div 
+            className="bg-white rounded-xl shadow-2xl max-w-lg w-full overflow-hidden relative transform transition-all duration-300 scale-100 p-6 md:p-8 text-left"
+            onClick={(e) => e.stopPropagation()} // Evita que se cierre al hacer click dentro del modal
+          >
+            {/* Botón de cerrar */}
+            <button 
+              onClick={() => setSelectedService(null)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            {/* Contenido del Modal */}
+            <div className="flex flex-col items-center md:items-start gap-6">
+              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-2 border-gray-200 bg-gray-50 p-1 mx-auto md:mx-0">
+                <div className="w-full h-full rounded-full overflow-hidden">
+                  <img 
+                    src={selectedService.image} 
+                    alt={selectedService.title} 
+                    className="w-full h-full object-cover"
+                    onError={(e) => { 
+                      e.currentTarget.src = 'https://placehold.co/400x400/0f766e/ffffff?text=IOA' 
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="w-full">
+                <h3 className="font-serif font-bold text-2xl text-gray-900 mb-3 border-b pb-2 tracking-wide">
+                  {selectedService.title}
+                </h3>
+                <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-6">
+                  {selectedService.desc}
+                </p>
+                
+                {/* Botón de acción dentro del modal (opcional, como para sacar turno) */}
+                <div className="flex justify-end gap-3">
+                  <button 
+                    onClick={() => setSelectedService(null)}
+                    className="border border-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded hover:bg-gray-50 transition-colors"
+                  >
+                    Cerrar
+                  </button>
+                  <a 
+                    href="#contacto" // O tu enlace directo a WhatsApp
+                    onClick={() => setSelectedService(null)}
+                    className="bg-primary hover:opacity-90 text-white text-sm font-medium px-5 py-2 rounded transition-opacity text-center"
+                  >
+                    Consultar Turno
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
     </section>
   )
 }
