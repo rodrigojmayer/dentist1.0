@@ -240,10 +240,10 @@ export function Header({ isAdminPage = false }: HeaderProps) {
         {!isAdminPage && isMenuOpen && (
           <div className="min-[1010px]:hidden py-4 border-t border-border bg-background px-4">
             <nav className="flex flex-col gap-4">
-              <Link href="/#equipo" className="text-muted-foreground" onClick={() => setIsMenuOpen(false)}>Equipo</Link>
               <Link href="/#nosotros" className="text-muted-foreground" onClick={() => setIsMenuOpen(false)}>Nosotros</Link>
-              <Link href="/#contacto" className="text-muted-foreground" onClick={() => setIsMenuOpen(false)}>Contacto</Link>
+              <Link href="/#equipo" className="text-muted-foreground" onClick={() => setIsMenuOpen(false)}>Equipo</Link>
               <Link href="/#servicios" className="text-muted-foreground" onClick={() => setIsMenuOpen(false)}>Servicios</Link>
+              <Link href="/#contacto" className="text-muted-foreground" onClick={() => setIsMenuOpen(false)}>Contacto</Link>
               
               {!isLoading && !user && (
                 <div className="flex flex-col gap-2 pt-2 border-t border-border">
