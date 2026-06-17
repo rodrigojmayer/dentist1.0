@@ -12,11 +12,11 @@ export default function Home() {
     <main>
       <Header />
       <Hero />
-      <Team />
       <About />
-      <Locations />
+      <Team />
       <Services />
       <WhyUs />
+      <Locations />
       <Footer />
     </main>
   )
