@@ -6,70 +6,83 @@ import { Activity, Stethoscope, Baby, Smile, ShieldAlert, Sparkles, Scissors, X 
 
 interface Service {
   title: string;
-  desc: string;
+  resumen: string;
   image: string;
+  desc: string;
 }
 
 const services: Service[]= [
   {
     title: "IMPLANTES DENTALES",
-    desc: "La solución definitiva y natural para reemplazar piezas faltantes mediante pernos de titanio y coronas a medida.",
-    image: "/services/Implantes.png"
+    resumen: "La solución definitiva y natural para reemplazar piezas faltantes mediante pernos de titanio y coronas a medida.",
+    image: "/services/Implantes.png",
+    desc: 'Los implantes dentales son raíces artificiales de titanio o zirconio que se insertan en el hueso maxilar para reemplazar piezas dentadas ausentes. Actúan como una base sólida para colocar coronas o puentes fijos, recuperando la estética y la función masticatoria de forma permanente.El Procedimiento Paso a PasoEl tratamiento se realiza bajo anestesia local en el consultorio odontológico:Estudio y planificación: Se realiza un escáner 3D o radiografía para evaluar la cantidad y calidad del hueso disponible.Colocación del implante: Se inserta el "tornillo" en el hueso. En algunos casos, se puede poner un diente provisional el mismo día (carga inmediata).Osteointegración: Es el proceso natural en el que el implante se fusiona con el hueso. Suele tardar entre 3 y 6 meses.Colocación de la corona: Una vez cicatrizado, se fija la prótesis definitiva (hecha de circonio o disilicato de litio) diseñada a medida para que luzca y funcione como un diente natural.Ventajas principalesFijos y estables: No se mueven ni se caen al hablar o comer.Conservadores: A diferencia de los puentes tradicionales, no requiere tallar los dientes sanos vecinos.Durabilidad: Con una correcta higiene bucal y controles periódicos, pueden durar toda la vida.¿Quiénes son candidatos?Cualquier persona que haya perdido uno o varios dientes puede ser apto, siempre y cuando tenga una encía sana y suficiente masa ósea. En casos donde falta hueso, se puede realizar una regeneración ósea previa.Para resolver dudas específicas sobre tu caso, el costo o los tiempos, te sugiero consultar con un especialista para obtener un diagnóstico personalizado. Puedes encontrar información detallada y autorizada sobre el procedimiento en la página de Mayo Clinic o en la guía de salud de Cigna Healthcare.'
   },
   {
     title: "ORTOPEDIA",
+    resumen: "Tratamientos orientados a guiar el crecimiento de los huesos maxilares en niños para una correcta alineación.",
+    image: "/services/Ortopedia.png",
     desc: "Tratamientos orientados a guiar el crecimiento de los huesos maxilares en niños para una correcta alineación.",
-    image: "/services/Ortopedia.png"
   },
   {
     title: "ORTODONCIAS",
+    resumen: "Corrección de la posición de los dientes y problemas de mordida mediante brackets de última generación.",
+    image: "/services/Ortodoncia.png",
     desc: "Corrección de la posición de los dientes y problemas de mordida mediante brackets de última generación.",
-    image: "/services/Ortodoncia.png"
   },
   {
     title: "BOTOX para bruxismo",
+    resumen: "Aplicación terapéutica que alivia de forma drástica la tensión involuntaria y el dolor de mandíbula.",
+    image: "/services/BotoxBruxismo.png",
     desc: "Aplicación terapéutica que alivia de forma drástica la tensión involuntaria y el dolor de mandíbula.",
-    image: "/services/BotoxBruxismo.png"
   },
   {
     title: "ODONTOPEDIATRIA",
+    resumen: "Atención odontológica integral especializada en niños, enfocada en la prevención y en un espacio sin miedos.",
+    image: "/services/Odontopediatria.png",
     desc: "Atención odontológica integral especializada en niños, enfocada en la prevención y en un espacio sin miedos.",
-    image: "/services/Odontopediatria.png"
   },
   {
     title: "BLANQUEAMIENTOS",
+    resumen: "Tratamiento rápido y seguro para aclarar varios tonos el color de tus dientes eliminando manchas.",
+    image: "/services/Blanqueamientos.png",
     desc: "Tratamiento rápido y seguro para aclarar varios tonos el color de tus dientes eliminando manchas.",
-    image: "/services/Blanqueamientos.png"
   },
   {
     title: "LIMPIEZA DENTAL",
+    resumen: "Eliminación profunda de sarro y placa bacteriana mediante ultrasonido para proteger tus encías.",
+    image: "/services/LimpiezaDental.png",
     desc: "Eliminación profunda de sarro y placa bacteriana mediante ultrasonido para proteger tus encías.",
-    image: "/services/LimpiezaDental.png"
   },
   {
     title: "TRAT. DE BRUXISMO",
+    resumen: "Confección de placas miorrelajantes rígidas a medida para evitar el desgaste dental durante el sueño.",
+    image: "/services/TratBruxismo.png",
     desc: "Confección de placas miorrelajantes rígidas a medida para evitar el desgaste dental durante el sueño.",
-    image: "/services/TratBruxismo.png"
   },
   {
     title: "PROTESIS REMOVIBLES",
+    resumen: "Estructuras adaptadas para reemplazar múltiples piezas dentales de forma cómoda y funcional.",
+    image: "/services/ProtesisRemovibles.png",
     desc: "Estructuras adaptadas para reemplazar múltiples piezas dentales de forma cómoda y funcional.",
-    image: "/services/ProtesisRemovibles.png"
   },
   {
     title: "TRAT. DE CONDUCTOS",
+    resumen: "Procedimiento preciso para salvar un diente infectado eliminando el dolor por completo.",
+    image: "/services/TratdeConducto.png",
     desc: "Procedimiento preciso para salvar un diente infectado eliminando el dolor por completo.",
-    image: "/services/TratdeConducto.png"
   },
   {
     title: "ALINEADORES INVISIBLES",
+    resumen: "Ortodoncia moderna mediante placas transparentes y removibles, sumamente discretas e higiénicas.",
+    image: "/services/Alineadores.png",
     desc: "Ortodoncia moderna mediante placas transparentes y removibles, sumamente discretas e higiénicas.",
-    image: "/services/Alineadores.png"
   },
   {
     title: "CIRUGIAS BUCALES",
+    resumen: "Intervenciones quirúrgicas seguras incluyendo extracción de muelas de juicio y tejidos blandos.",
+    image: "/services/Cirugia.png",
     desc: "Intervenciones quirúrgicas seguras incluyendo extracción de muelas de juicio y tejidos blandos.",
-    image: "/services/Cirugia.png"
   },
 ]
 
@@ -114,12 +127,12 @@ export function Services() {
               </h3>
 
               <p className="text-primary-foreground/70 text-xs md:text-sm font-normal leading-relaxed max-w-[240px] mb-5 flex-grow">
-                {service.desc}
+                {service.resumen}
               </p>
 
               <button 
                 onClick={() => setSelectedService(service)}
-                className="bg-[#dfa233] hover:bg-[#c78f2b] text-white text-xs font-semibold uppercase tracking-wider px-5 py-2 rounded shadow-sm transition-colors duration-200">
+                className="bg-[#dfa233] hover:bg-[#c78f2b] text-white text-xs font-semibold uppercase tracking-wider px-5 py-2 rounded shadow-sm transition-colors duration-200 cursor-pointer">
                 Ver más
               </button>
             </div>
