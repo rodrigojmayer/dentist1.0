@@ -22,7 +22,7 @@ const services: Service[]= [
     title: "ORTOPEDIA",
     resumen: "Tratamientos orientados a guiar el crecimiento de los huesos maxilares en niños para una correcta alineación.",
     image: "/services/Ortopedia.png",
-    desc: "Tratamientos orientados a guiar el crecimiento de los huesos maxilares en niños para una correcta alineación.",
+    desc: "",
   },
   {
     title: "ORTODONCIAS",
