@@ -26,7 +26,7 @@ const services: Service[]= [
   },
   {
     title: "ORTODONCIAS",
-    resumen: "Corrección de la posición de los dientes y problemas de mordida mediante brackets de última generación.",
+    resumen: ".",
     image: "/services/Ortodoncia.png",
     desc: "Corrección de la posición de los dientes y problemas de mordida mediante brackets de última generación.",
   },
