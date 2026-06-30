@@ -32,7 +32,7 @@ const services: Service[]= [
   },
   {
     title: "BOTOX para bruxismo",
-    resumen: "Aplicación terapéutica que alivia de forma drástica la tensión involuntaria y el dolor de mandíbula.",
+    resumen: ".",
     image: "/services/BotoxBruxismo.png",
     desc: "Aplicación terapéutica que alivia de forma drástica la tensión involuntaria y el dolor de mandíbula.",
   },
