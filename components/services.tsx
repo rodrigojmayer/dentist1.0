@@ -38,7 +38,7 @@ const services: Service[]= [
   },
   {
     title: "ODONTOPEDIATRIA",
-    resumen: "Atención odontológica integral especializada en niños, enfocada en la prevención y en un espacio sin miedos.",
+    resumen: ".",
     image: "/services/Odontopediatria.png",
     desc: "Atención odontológica integral especializada en niños, enfocada en la prevención y en un espacio sin miedos.",
   },
